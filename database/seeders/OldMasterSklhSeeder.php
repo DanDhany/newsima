@@ -14,17 +14,20 @@ class OldMasterSklhSeeder extends Seeder
 
     public function run(): void
     {
+        // --- PERUBAHAN ---
+        // TRUNCATE DIHAPUS
+
         $oldSekolah = DB::connection('mysql_old')->table('master_sklh')->get();
-        $newSekolah = [];
 
         foreach ($oldSekolah as $sekolah) {
-            // Cek apakah user_id ada di map
+            // Cek apakah user_id ada di map (user mungkin di-skip karena duplikat)
             if (!isset(OldUserSeeder::$userIdMap[$sekolah->id_user])) {
-                continue; // Skip jika user tidak ditemukan
+                continue;
             }
-            $newId = $sekolah->id;
-            $newSekolah[] = [
-                'id' => $newId,
+
+            // Insert satu per satu dan dapatkan ID baru
+            $newSekolahId = DB::table('master_sklh')->insertGetId([
+                // 'id' tidak di-set
                 'id_user' => OldUserSeeder::$userIdMap[$sekolah->id_user],
                 'jenis_sklh' => $sekolah->jenis_sklh,
                 'alamat_sklh' => $sekolah->alamat_sklh,
@@ -39,11 +42,10 @@ class OldMasterSklhSeeder extends Seeder
                 'handphone_narahubung' => $sekolah->handphone_narahubung,
                 'created_at' => $sekolah->created_at,
                 'updated_at' => $sekolah->updated_at,
-            ];
+            ]);
 
-            self::$sekolahIdMap[$sekolah->id] = $newId;
+            // Simpan pemetaan ID lama ke ID baru
+            self::$sekolahIdMap[$sekolah->id] = $newSekolahId;
         }
-
-        DB::table('master_sklh')->insert($newSekolah);
     }
 }

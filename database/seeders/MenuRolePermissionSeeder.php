@@ -2,45 +2,158 @@
 
 namespace Database\Seeders;
 
-use App\Models\Menu;
-use App\Models\MenuRolePermission;
-use App\Models\Permission;
-use App\Models\Role;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class MenuRolePermissionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     *
+     * @return void
      */
-    public function run(): void
+    public function run()
     {
-        //
-        $superadminRole = Role::where('name', 'Super Admin')->first();
-        $userRole = Role::where('name', 'User')->first();
-        $menus = Menu::all();
-        $permissions = Permission::all();
+        // Data lengkap dari file SQL
+        $permissions = [
+            ['id' => 1, 'menu_id' => 1, 'role_id' => 1, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 2, 'menu_id' => 1, 'role_id' => 1, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 3, 'menu_id' => 1, 'role_id' => 1, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 4, 'menu_id' => 1, 'role_id' => 1, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 5, 'menu_id' => 1, 'role_id' => 1, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 6, 'menu_id' => 1, 'role_id' => 1, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 7, 'menu_id' => 1, 'role_id' => 1, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 8, 'menu_id' => 2, 'role_id' => 1, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 9, 'menu_id' => 2, 'role_id' => 1, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 10, 'menu_id' => 2, 'role_id' => 1, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 11, 'menu_id' => 2, 'role_id' => 1, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 12, 'menu_id' => 2, 'role_id' => 1, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 13, 'menu_id' => 2, 'role_id' => 1, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 14, 'menu_id' => 2, 'role_id' => 1, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 15, 'menu_id' => 3, 'role_id' => 1, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 16, 'menu_id' => 3, 'role_id' => 1, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 17, 'menu_id' => 3, 'role_id' => 1, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 18, 'menu_id' => 3, 'role_id' => 1, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 19, 'menu_id' => 3, 'role_id' => 1, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 20, 'menu_id' => 3, 'role_id' => 1, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 21, 'menu_id' => 3, 'role_id' => 1, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 22, 'menu_id' => 4, 'role_id' => 1, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 23, 'menu_id' => 4, 'role_id' => 1, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 24, 'menu_id' => 4, 'role_id' => 1, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 25, 'menu_id' => 4, 'role_id' => 1, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 26, 'menu_id' => 4, 'role_id' => 1, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 27, 'menu_id' => 4, 'role_id' => 1, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 28, 'menu_id' => 4, 'role_id' => 1, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 36, 'menu_id' => 13, 'role_id' => 1, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-19 16:46:41', 'updated_at' => '2025-04-19 16:46:41', 'deleted_at' => NULL],
+            ['id' => 37, 'menu_id' => 13, 'role_id' => 1, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-19 18:29:27', 'updated_at' => '2025-04-19 18:29:27', 'deleted_at' => NULL],
+            ['id' => 38, 'menu_id' => 13, 'role_id' => 1, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-19 21:53:15', 'updated_at' => '2025-04-19 21:53:15', 'deleted_at' => NULL],
+            ['id' => 39, 'menu_id' => 13, 'role_id' => 1, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-19 21:53:34', 'updated_at' => '2025-04-19 21:53:34', 'deleted_at' => NULL],
+            ['id' => 40, 'menu_id' => 13, 'role_id' => 1, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-19 21:53:51', 'updated_at' => '2025-04-19 21:53:51', 'deleted_at' => NULL],
+            ['id' => 41, 'menu_id' => 13, 'role_id' => 1, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-19 21:54:07', 'updated_at' => '2025-04-19 21:54:07', 'deleted_at' => NULL],
+            ['id' => 42, 'menu_id' => 13, 'role_id' => 1, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-19 21:54:21', 'updated_at' => '2025-04-19 21:54:21', 'deleted_at' => NULL],
+            ['id' => 43, 'menu_id' => 6, 'role_id' => 1, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-19 22:12:22', 'updated_at' => '2025-04-19 22:12:22', 'deleted_at' => NULL],
+            ['id' => 44, 'menu_id' => 6, 'role_id' => 1, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-19 22:12:45', 'updated_at' => '2025-04-19 22:12:45', 'deleted_at' => NULL],
+            ['id' => 45, 'menu_id' => 6, 'role_id' => 1, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-20 09:02:57', 'updated_at' => '2025-04-20 09:02:57', 'deleted_at' => NULL],
+            ['id' => 46, 'menu_id' => 6, 'role_id' => 1, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-20 09:02:57', 'updated_at' => '2025-04-20 09:02:57', 'deleted_at' => NULL],
+            ['id' => 47, 'menu_id' => 6, 'role_id' => 1, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-20 09:03:46', 'updated_at' => '2025-04-20 09:03:46', 'deleted_at' => NULL],
+            ['id' => 48, 'menu_id' => 6, 'role_id' => 1, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-20 09:04:02', 'updated_at' => '2025-04-20 09:04:02', 'deleted_at' => NULL],
+            ['id' => 49, 'menu_id' => 6, 'role_id' => 1, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-20 09:12:04', 'updated_at' => '2025-04-20 09:12:04', 'deleted_at' => NULL],
+            ['id' => 50, 'menu_id' => 7, 'role_id' => 1, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-20 09:13:14', 'updated_at' => '2025-04-20 09:13:14', 'deleted_at' => NULL],
+            ['id' => 51, 'menu_id' => 7, 'role_id' => 1, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-20 09:13:47', 'updated_at' => '2025-04-20 09:13:47', 'deleted_at' => NULL],
+            ['id' => 52, 'menu_id' => 7, 'role_id' => 1, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-20 09:14:35', 'updated_at' => '2025-04-20 09:14:35', 'deleted_at' => NULL],
+            ['id' => 53, 'menu_id' => 7, 'role_id' => 1, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-20 09:15:18', 'updated_at' => '2025-04-20 09:15:18', 'deleted_at' => NULL],
+            ['id' => 54, 'menu_id' => 7, 'role_id' => 1, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-20 09:15:41', 'updated_at' => '2025-04-20 09:15:41', 'deleted_at' => NULL],
+            ['id' => 55, 'menu_id' => 7, 'role_id' => 1, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-20 09:16:04', 'updated_at' => '2025-04-20 09:16:04', 'deleted_at' => NULL],
+            ['id' => 56, 'menu_id' => 7, 'role_id' => 1, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-20 09:16:22', 'updated_at' => '2025-04-20 09:16:22', 'deleted_at' => NULL],
+            ['id' => 57, 'menu_id' => 10, 'role_id' => 1, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-20 09:17:14', 'updated_at' => '2025-04-20 09:17:14', 'deleted_at' => NULL],
+            ['id' => 58, 'menu_id' => 10, 'role_id' => 1, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-20 09:17:41', 'updated_at' => '2025-04-20 09:17:41', 'deleted_at' => NULL],
+            ['id' => 59, 'menu_id' => 10, 'role_id' => 1, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-20 09:17:41', 'updated_at' => '2025-04-20 09:17:58', 'deleted_at' => NULL],
+            ['id' => 60, 'menu_id' => 10, 'role_id' => 1, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-20 09:18:54', 'updated_at' => '2025-04-20 09:18:54', 'deleted_at' => NULL],
+            ['id' => 61, 'menu_id' => 10, 'role_id' => 1, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-20 09:19:10', 'updated_at' => '2025-04-20 09:19:10', 'deleted_at' => NULL],
+            ['id' => 62, 'menu_id' => 10, 'role_id' => 1, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-20 09:19:29', 'updated_at' => '2025-04-20 09:19:29', 'deleted_at' => NULL],
+            ['id' => 63, 'menu_id' => 10, 'role_id' => 1, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-20 09:19:29', 'updated_at' => '2025-04-20 09:19:44', 'deleted_at' => NULL],
+            ['id' => 64, 'menu_id' => 11, 'role_id' => 1, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-20 09:39:05', 'updated_at' => '2025-04-20 09:39:05', 'deleted_at' => NULL],
+            ['id' => 65, 'menu_id' => 11, 'role_id' => 1, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-20 09:39:29', 'updated_at' => '2025-04-20 09:39:29', 'deleted_at' => NULL],
+            ['id' => 66, 'menu_id' => 11, 'role_id' => 1, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-20 09:39:46', 'updated_at' => '2025-04-20 09:39:46', 'deleted_at' => NULL],
+            ['id' => 67, 'menu_id' => 11, 'role_id' => 1, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-20 09:40:01', 'updated_at' => '2025-04-20 09:40:01', 'deleted_at' => NULL],
+            ['id' => 68, 'menu_id' => 11, 'role_id' => 1, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-20 09:40:19', 'updated_at' => '2025-04-20 09:40:19', 'deleted_at' => NULL],
+            ['id' => 69, 'menu_id' => 11, 'role_id' => 1, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-20 09:40:35', 'updated_at' => '2025-04-20 09:40:35', 'deleted_at' => NULL],
+            ['id' => 70, 'menu_id' => 11, 'role_id' => 1, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-20 09:40:51', 'updated_at' => '2025-04-20 09:40:51', 'deleted_at' => NULL],
+            ['id' => 71, 'menu_id' => 12, 'role_id' => 1, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-20 09:41:11', 'updated_at' => '2025-04-20 09:41:11', 'deleted_at' => NULL],
+            ['id' => 72, 'menu_id' => 12, 'role_id' => 1, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-20 09:41:29', 'updated_at' => '2025-04-20 09:41:29', 'deleted_at' => NULL],
+            ['id' => 73, 'menu_id' => 12, 'role_id' => 1, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-20 09:41:45', 'updated_at' => '2025-04-20 09:41:45', 'deleted_at' => NULL],
+            ['id' => 74, 'menu_id' => 12, 'role_id' => 1, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-20 09:42:03', 'updated_at' => '2025-04-20 09:42:03', 'deleted_at' => NULL],
+            ['id' => 75, 'menu_id' => 12, 'role_id' => 1, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-20 09:42:18', 'updated_at' => '2025-04-20 09:42:18', 'deleted_at' => NULL],
+            ['id' => 76, 'menu_id' => 12, 'role_id' => 1, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-20 09:42:35', 'updated_at' => '2025-04-20 09:42:35', 'deleted_at' => NULL],
+            ['id' => 77, 'menu_id' => 12, 'role_id' => 1, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-20 09:42:49', 'updated_at' => '2025-04-20 09:42:49', 'deleted_at' => NULL],
+            ['id' => 78, 'menu_id' => 1, 'role_id' => 2, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-20 13:22:34', 'updated_at' => '2025-04-20 13:22:34', 'deleted_at' => NULL],
+            ['id' => 79, 'menu_id' => 1, 'role_id' => 2, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-20 13:28:08', 'updated_at' => '2025-04-20 13:28:08', 'deleted_at' => NULL],
+            ['id' => 80, 'menu_id' => 1, 'role_id' => 2, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-20 13:34:07', 'updated_at' => '2025-04-20 13:34:07', 'deleted_at' => NULL],
+            ['id' => 81, 'menu_id' => 1, 'role_id' => 2, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-20 13:34:46', 'updated_at' => '2025-04-20 13:34:46', 'deleted_at' => NULL],
+            ['id' => 82, 'menu_id' => 1, 'role_id' => 2, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-20 13:35:19', 'updated_at' => '2025-04-20 13:35:19', 'deleted_at' => NULL],
+            ['id' => 83, 'menu_id' => 1, 'role_id' => 2, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-20 13:35:47', 'updated_at' => '2025-04-20 13:35:47', 'deleted_at' => NULL],
+            ['id' => 84, 'menu_id' => 1, 'role_id' => 2, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-20 13:36:05', 'updated_at' => '2025-04-20 13:36:05', 'deleted_at' => NULL],
+            ['id' => 92, 'menu_id' => 3, 'role_id' => 2, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-20 13:42:19', 'updated_at' => '2025-04-20 13:42:19', 'deleted_at' => NULL],
+            ['id' => 93, 'menu_id' => 3, 'role_id' => 2, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-20 13:42:19', 'updated_at' => '2025-04-20 13:42:19', 'deleted_at' => NULL],
+            ['id' => 94, 'menu_id' => 3, 'role_id' => 2, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-20 13:42:19', 'updated_at' => '2025-04-20 13:42:19', 'deleted_at' => NULL],
+            ['id' => 95, 'menu_id' => 3, 'role_id' => 2, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-20 13:42:19', 'updated_at' => '2025-04-20 13:42:19', 'deleted_at' => NULL],
+            ['id' => 96, 'menu_id' => 3, 'role_id' => 2, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-20 13:42:19', 'updated_at' => '2025-04-20 13:42:19', 'deleted_at' => NULL],
+            ['id' => 97, 'menu_id' => 3, 'role_id' => 2, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-20 13:42:19', 'updated_at' => '2025-04-20 13:42:19', 'deleted_at' => NULL],
+            ['id' => 98, 'menu_id' => 3, 'role_id' => 2, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-20 13:42:19', 'updated_at' => '2025-04-20 13:42:19', 'deleted_at' => NULL],
+            ['id' => 99, 'menu_id' => 14, 'role_id' => 2, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-20 13:47:57', 'updated_at' => '2025-04-20 13:47:57', 'deleted_at' => NULL],
+            ['id' => 100, 'menu_id' => 14, 'role_id' => 2, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-20 13:47:57', 'updated_at' => '2025-04-20 13:47:57', 'deleted_at' => NULL],
+            ['id' => 101, 'menu_id' => 14, 'role_id' => 2, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-20 13:47:57', 'updated_at' => '2025-04-20 13:47:57', 'deleted_at' => NULL],
+            ['id' => 102, 'menu_id' => 14, 'role_id' => 2, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-20 13:47:57', 'updated_at' => '2025-04-20 13:47:57', 'deleted_at' => NULL],
+            ['id' => 103, 'menu_id' => 14, 'role_id' => 2, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-20 13:47:57', 'updated_at' => '2025-04-20 13:47:57', 'deleted_at' => NULL],
+            ['id' => 104, 'menu_id' => 14, 'role_id' => 2, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-20 13:47:57', 'updated_at' => '2025-04-20 13:47:57', 'deleted_at' => NULL],
+            ['id' => 105, 'menu_id' => 14, 'role_id' => 2, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-20 13:47:57', 'updated_at' => '2025-04-20 13:47:57', 'deleted_at' => NULL],
+            ['id' => 106, 'menu_id' => 15, 'role_id' => 2, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-21 03:55:14', 'updated_at' => '2025-04-21 03:55:14', 'deleted_at' => NULL],
+            ['id' => 107, 'menu_id' => 15, 'role_id' => 2, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-22 02:24:08', 'updated_at' => '2025-04-22 02:24:08', 'deleted_at' => NULL],
+            ['id' => 108, 'menu_id' => 15, 'role_id' => 2, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-22 02:38:11', 'updated_at' => '2025-04-22 02:38:11', 'deleted_at' => NULL],
+            ['id' => 109, 'menu_id' => 15, 'role_id' => 2, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-22 02:38:38', 'updated_at' => '2025-04-22 02:38:38', 'deleted_at' => NULL],
+            ['id' => 110, 'menu_id' => 15, 'role_id' => 2, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-22 02:44:32', 'updated_at' => '2025-04-22 02:44:32', 'deleted_at' => NULL],
+            ['id' => 111, 'menu_id' => 15, 'role_id' => 2, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-22 03:04:26', 'updated_at' => '2025-04-22 03:04:26', 'deleted_at' => NULL],
+            ['id' => 112, 'menu_id' => 15, 'role_id' => 2, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-22 03:04:44', 'updated_at' => '2025-04-22 03:04:44', 'deleted_at' => NULL],
+            ['id' => 113, 'menu_id' => 16, 'role_id' => 2, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-22 03:05:02', 'updated_at' => '2025-04-22 03:05:02', 'deleted_at' => NULL],
+            ['id' => 114, 'menu_id' => 16, 'role_id' => 2, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-22 03:08:31', 'updated_at' => '2025-04-22 03:08:31', 'deleted_at' => NULL],
+            ['id' => 115, 'menu_id' => 16, 'role_id' => 2, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-22 03:17:15', 'updated_at' => '2025-04-22 03:17:15', 'deleted_at' => NULL],
+            ['id' => 116, 'menu_id' => 16, 'role_id' => 2, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-22 03:17:30', 'updated_at' => '2025-04-22 03:17:30', 'deleted_at' => NULL],
+            ['id' => 117, 'menu_id' => 16, 'role_id' => 2, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-22 03:17:45', 'updated_at' => '2025-04-22 03:17:45', 'deleted_at' => NULL],
+            ['id' => 118, 'menu_id' => 16, 'role_id' => 2, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-22 04:08:19', 'updated_at' => '2025-04-22 04:08:19', 'deleted_at' => NULL],
+            ['id' => 119, 'menu_id' => 16, 'role_id' => 2, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-22 04:08:34', 'updated_at' => '2025-04-22 04:08:34', 'deleted_at' => NULL],
+            ['id' => 120, 'menu_id' => 17, 'role_id' => 2, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-22 04:29:29', 'updated_at' => '2025-04-22 04:29:29', 'deleted_at' => NULL],
+            ['id' => 121, 'menu_id' => 17, 'role_id' => 2, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-22 04:33:56', 'updated_at' => '2025-04-22 04:33:56', 'deleted_at' => NULL],
+            ['id' => 122, 'menu_id' => 17, 'role_id' => 2, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-23 08:33:49', 'updated_at' => '2025-04-23 08:33:49', 'deleted_at' => NULL],
+            ['id' => 123, 'menu_id' => 17, 'role_id' => 2, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-23 08:33:49', 'updated_at' => '2025-04-23 08:33:49', 'deleted_at' => NULL],
+            ['id' => 124, 'menu_id' => 17, 'role_id' => 2, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-23 08:35:04', 'updated_at' => '2025-04-23 08:35:04', 'deleted_at' => NULL],
+            ['id' => 125, 'menu_id' => 17, 'role_id' => 2, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-23 08:35:22', 'updated_at' => '2025-04-23 08:35:22', 'deleted_at' => NULL],
+            ['id' => 126, 'menu_id' => 17, 'role_id' => 2, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-23 08:35:38', 'updated_at' => '2025-04-23 08:35:38', 'deleted_at' => NULL],
+            ['id' => 127, 'menu_id' => 18, 'role_id' => 2, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-23 08:35:55', 'updated_at' => '2025-04-23 08:35:55', 'deleted_at' => NULL],
+            ['id' => 128, 'menu_id' => 18, 'role_id' => 2, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-23 08:37:35', 'updated_at' => '2025-04-23 08:37:35', 'deleted_at' => NULL],
+            ['id' => 129, 'menu_id' => 18, 'role_id' => 2, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-23 08:37:49', 'updated_at' => '2025-04-23 08:37:49', 'deleted_at' => NULL],
+            ['id' => 130, 'menu_id' => 18, 'role_id' => 2, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-23 08:38:05', 'updated_at' => '2025-04-23 08:38:05', 'deleted_at' => NULL],
+            ['id' => 131, 'menu_id' => 18, 'role_id' => 2, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-23 08:38:21', 'updated_at' => '2025-04-23 08:38:21', 'deleted_at' => NULL],
+            ['id' => 132, 'menu_id' => 18, 'role_id' => 2, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-23 08:38:33', 'updated_at' => '2025-04-23 08:38:33', 'deleted_at' => NULL],
+            ['id' => 133, 'menu_id' => 18, 'role_id' => 2, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-23 08:38:46', 'updated_at' => '2025-04-23 08:38:46', 'deleted_at' => NULL],
+            ['id' => 134, 'menu_id' => 19, 'role_id' => 2, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-23 08:42:35', 'updated_at' => '2025-04-23 08:42:35', 'deleted_at' => NULL],
+            ['id' => 135, 'menu_id' => 19, 'role_id' => 2, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-23 08:43:16', 'updated_at' => '2025-04-23 08:43:16', 'deleted_at' => NULL],
+            ['id' => 136, 'menu_id' => 19, 'role_id' => 2, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-23 08:43:35', 'updated_at' => '2025-04-23 08:43:35', 'deleted_at' => NULL],
+            ['id' => 137, 'menu_id' => 19, 'role_id' => 2, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-23 08:43:47', 'updated_at' => '2025-04-23 08:43:47', 'deleted_at' => NULL],
+            ['id' => 138, 'menu_id' => 19, 'role_id' => 2, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-16 08:43:59', 'updated_at' => '2025-04-23 08:43:59', 'deleted_at' => NULL],
+            ['id' => 139, 'menu_id' => 19, 'role_id' => 2, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-23 08:44:12', 'updated_at' => '2025-04-23 08:44:12', 'deleted_at' => NULL],
+            ['id' => 140, 'menu_id' => 19, 'role_id' => 2, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-23 08:44:28', 'updated_at' => '2025-04-23 08:44:28', 'deleted_at' => NULL],
+            ['id' => 141, 'menu_id' => 20, 'role_id' => 2, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-23 08:44:45', 'updated_at' => '2025-04-23 08:44:45', 'deleted_at' => NULL],
+            ['id' => 142, 'menu_id' => 20, 'role_id' => 2, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-23 08:45:13', 'updated_at' => '2025-04-23 08:45:13', 'deleted_at' => NULL],
+            ['id' => 143, 'menu_id' => 20, 'role_id' => 2, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-23 08:45:29', 'updated_at' => '2025-04-23 08:45:29', 'deleted_at' => NULL],
+            ['id' => 144, 'menu_id' => 20, 'role_id' => 2, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-23 08:45:42', 'updated_at' => '2025-04-23 08:45:42', 'deleted_at' => NULL],
+            ['id' => 145, 'menu_id' => 20, 'role_id' => 2, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-23 08:46:14', 'updated_at' => '2025-04-23 08:46:14', 'deleted_at' => NULL],
+            ['id' => 146, 'menu_id' => 20, 'role_id' => 2, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-23 08:46:25', 'updated_at' => '2025-04-23 08:46:25', 'deleted_at' => NULL],
+            ['id' => 147, 'menu_id' => 20, 'role_id' => 2, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-23 08:46:39', 'updated_at' => '2025-04-23 08:46:39', 'deleted_at' => NULL],
+        ];
 
-        foreach ($menus as $menu) {
-            // Super Admin gets all permissions
-            foreach ($permissions as $permission) {
-                MenuRolePermission::create([
-                    'menu_id' => $menu->id,
-                    'role_id' => $superadminRole->id,
-                    'permission_id' => $permission->id,
-                ]);
-            }
-
-            // User only gets view permission for home
-            if ($menu->route_name === 'home.index') {
-                $viewPermission = Permission::where('code', 'can_view')->first();
-                MenuRolePermission::create([
-                    'menu_id' => $menu->id,
-                    'role_id' => $userRole->id,
-                    'permission_id' => $viewPermission->id,
-                ]);
-            }
+        // Membagi data menjadi chunk agar lebih efisien saat proses insert
+        foreach (array_chunk($permissions, 50) as $chunk) {
+            DB::table('menu_role_permissions')->insert($chunk);
         }
     }
 }

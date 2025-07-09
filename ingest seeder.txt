@@ -1,0 +1,938 @@
+Ingestion Results for d:\_DAN\DevEnv\kominfo-new-sima\src\database\seeders
+Summary
+Directory: seeders
+Files analyzed: 14
+
+Estimated tokens: 14.1k
+
+
+Directory structure:
+└── seeders/
+    ├── AccessSeeder.php
+    ├── DatabaseSeeder.php
+    ├── MenuRolePermissionSeeder.php
+    ├── MenuSeeder.php
+    ├── OldMagangSeeder.php
+    ├── OldMasterBidangMemberSeeder.php
+    ├── OldMasterBidangSeeder.php
+    ├── OldMasterSklhSeeder.php
+    ├── OldNotaDinasSeeder.php
+    ├── OldPesertaSeeder.php
+    ├── OldUserSeeder.php
+    ├── PermissionSeeder.php
+    ├── RoleSeeder.php
+    └── UserSeeder.php
+
+
+File Contents
+
+===============================================
+File: AccessSeeder.php
+===============================================
+
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Access;
+use App\Models\Menu;
+use App\Models\Role;
+use Carbon\Carbon;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+
+class AccessSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        //
+        $role = Role::find(1);
+        $menus = Menu::all();
+
+        $accessArray = [];
+        foreach ($menus as $key => $value) {
+            $accessArray = [
+                'menu_id' => $value->id,
+                'role_id' => $role->id,
+                'can_view' => 1,
+                'can_create' => 1,
+                'can_edit' => 1,
+                'can_delete' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ];
+
+            Access::insert($accessArray);
+        }
+
+    }
+}
+
+
+===============================================
+File: DatabaseSeeder.php
+===============================================
+
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\User;
+// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
+
+class DatabaseSeeder extends Seeder
+{
+    /**
+     * Seed the application's database.
+     */
+    // File: DatabaseSeeder.php
+
+    public function run(): void
+    {
+        Schema::disableForeignKeyConstraints();
+
+        // Aktifkan kembali truncate di setiap seeder jika diperlukan
+        // DB::table('...')->truncate(); 
+
+        $this->call([
+            // 1. Master data yang tidak punya dependensi
+            OldMasterBidangSeeder::class,
+            RoleSeeder::class,
+            PermissionSeeder::class,
+
+            // 2. User, menjadi induk untuk sekolah
+            OldUserSeeder::class,
+
+            // 3. Member, bergantung pada Bidang
+            OldMasterBidangMemberSeeder::class,
+
+            // 4. Sekolah, bergantung pada User
+            OldMasterSklhSeeder::class,
+
+            // 5. Magang, bergantung pada Sekolah
+            OldMagangSeeder::class,
+
+            // 6. Peserta, bergantung pada Magang dan Member
+            OldPesertaSeeder::class,
+
+            // 7. Nota Dinas, bergantung pada banyak seeder sebelumnya
+            OldNotaDinasSeeder::class,
+
+            // Seeders untuk setup awal (jika tidak migrasi) bisa dijalankan terpisah
+            // UserSeeder::class,
+            MenuSeeder::class,
+            MenuRolePermissionSeeder::class,
+        ]);
+
+        Schema::enableForeignKeyConstraints();
+    }
+}
+
+
+===============================================
+File: MenuRolePermissionSeeder.php
+===============================================
+
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class MenuRolePermissionSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        // Data lengkap dari file SQL
+        $permissions = [
+            ['id' => 1, 'menu_id' => 1, 'role_id' => 1, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 2, 'menu_id' => 1, 'role_id' => 1, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 3, 'menu_id' => 1, 'role_id' => 1, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 4, 'menu_id' => 1, 'role_id' => 1, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 5, 'menu_id' => 1, 'role_id' => 1, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 6, 'menu_id' => 1, 'role_id' => 1, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 7, 'menu_id' => 1, 'role_id' => 1, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 8, 'menu_id' => 2, 'role_id' => 1, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 9, 'menu_id' => 2, 'role_id' => 1, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 10, 'menu_id' => 2, 'role_id' => 1, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 11, 'menu_id' => 2, 'role_id' => 1, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 12, 'menu_id' => 2, 'role_id' => 1, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 13, 'menu_id' => 2, 'role_id' => 1, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 14, 'menu_id' => 2, 'role_id' => 1, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 15, 'menu_id' => 3, 'role_id' => 1, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 16, 'menu_id' => 3, 'role_id' => 1, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 17, 'menu_id' => 3, 'role_id' => 1, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 18, 'menu_id' => 3, 'role_id' => 1, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 19, 'menu_id' => 3, 'role_id' => 1, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 20, 'menu_id' => 3, 'role_id' => 1, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 21, 'menu_id' => 3, 'role_id' => 1, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 22, 'menu_id' => 4, 'role_id' => 1, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 23, 'menu_id' => 4, 'role_id' => 1, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 24, 'menu_id' => 4, 'role_id' => 1, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 25, 'menu_id' => 4, 'role_id' => 1, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 26, 'menu_id' => 4, 'role_id' => 1, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 27, 'menu_id' => 4, 'role_id' => 1, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 28, 'menu_id' => 4, 'role_id' => 1, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-16 10:10:25', 'updated_at' => '2025-04-16 10:10:25', 'deleted_at' => NULL],
+            ['id' => 36, 'menu_id' => 13, 'role_id' => 1, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-19 16:46:41', 'updated_at' => '2025-04-19 16:46:41', 'deleted_at' => NULL],
+            ['id' => 37, 'menu_id' => 13, 'role_id' => 1, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-19 18:29:27', 'updated_at' => '2025-04-19 18:29:27', 'deleted_at' => NULL],
+            ['id' => 38, 'menu_id' => 13, 'role_id' => 1, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-19 21:53:15', 'updated_at' => '2025-04-19 21:53:15', 'deleted_at' => NULL],
+            ['id' => 39, 'menu_id' => 13, 'role_id' => 1, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-19 21:53:34', 'updated_at' => '2025-04-19 21:53:34', 'deleted_at' => NULL],
+            ['id' => 40, 'menu_id' => 13, 'role_id' => 1, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-19 21:53:51', 'updated_at' => '2025-04-19 21:53:51', 'deleted_at' => NULL],
+            ['id' => 41, 'menu_id' => 13, 'role_id' => 1, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-19 21:54:07', 'updated_at' => '2025-04-19 21:54:07', 'deleted_at' => NULL],
+            ['id' => 42, 'menu_id' => 13, 'role_id' => 1, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-19 21:54:21', 'updated_at' => '2025-04-19 21:54:21', 'deleted_at' => NULL],
+            ['id' => 43, 'menu_id' => 6, 'role_id' => 1, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-19 22:12:22', 'updated_at' => '2025-04-19 22:12:22', 'deleted_at' => NULL],
+            ['id' => 44, 'menu_id' => 6, 'role_id' => 1, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-19 22:12:45', 'updated_at' => '2025-04-19 22:12:45', 'deleted_at' => NULL],
+            ['id' => 45, 'menu_id' => 6, 'role_id' => 1, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-20 09:02:57', 'updated_at' => '2025-04-20 09:02:57', 'deleted_at' => NULL],
+            ['id' => 46, 'menu_id' => 6, 'role_id' => 1, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-20 09:02:57', 'updated_at' => '2025-04-20 09:02:57', 'deleted_at' => NULL],
+            ['id' => 47, 'menu_id' => 6, 'role_id' => 1, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-20 09:03:46', 'updated_at' => '2025-04-20 09:03:46', 'deleted_at' => NULL],
+            ['id' => 48, 'menu_id' => 6, 'role_id' => 1, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-20 09:04:02', 'updated_at' => '2025-04-20 09:04:02', 'deleted_at' => NULL],
+            ['id' => 49, 'menu_id' => 6, 'role_id' => 1, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-20 09:12:04', 'updated_at' => '2025-04-20 09:12:04', 'deleted_at' => NULL],
+            ['id' => 50, 'menu_id' => 7, 'role_id' => 1, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-20 09:13:14', 'updated_at' => '2025-04-20 09:13:14', 'deleted_at' => NULL],
+            ['id' => 51, 'menu_id' => 7, 'role_id' => 1, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-20 09:13:47', 'updated_at' => '2025-04-20 09:13:47', 'deleted_at' => NULL],
+            ['id' => 52, 'menu_id' => 7, 'role_id' => 1, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-20 09:14:35', 'updated_at' => '2025-04-20 09:14:35', 'deleted_at' => NULL],
+            ['id' => 53, 'menu_id' => 7, 'role_id' => 1, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-20 09:15:18', 'updated_at' => '2025-04-20 09:15:18', 'deleted_at' => NULL],
+            ['id' => 54, 'menu_id' => 7, 'role_id' => 1, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-20 09:15:41', 'updated_at' => '2025-04-20 09:15:41', 'deleted_at' => NULL],
+            ['id' => 55, 'menu_id' => 7, 'role_id' => 1, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-20 09:16:04', 'updated_at' => '2025-04-20 09:16:04', 'deleted_at' => NULL],
+            ['id' => 56, 'menu_id' => 7, 'role_id' => 1, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-20 09:16:22', 'updated_at' => '2025-04-20 09:16:22', 'deleted_at' => NULL],
+            ['id' => 57, 'menu_id' => 10, 'role_id' => 1, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-20 09:17:14', 'updated_at' => '2025-04-20 09:17:14', 'deleted_at' => NULL],
+            ['id' => 58, 'menu_id' => 10, 'role_id' => 1, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-20 09:17:41', 'updated_at' => '2025-04-20 09:17:41', 'deleted_at' => NULL],
+            ['id' => 59, 'menu_id' => 10, 'role_id' => 1, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-20 09:17:41', 'updated_at' => '2025-04-20 09:17:58', 'deleted_at' => NULL],
+            ['id' => 60, 'menu_id' => 10, 'role_id' => 1, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-20 09:18:54', 'updated_at' => '2025-04-20 09:18:54', 'deleted_at' => NULL],
+            ['id' => 61, 'menu_id' => 10, 'role_id' => 1, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-20 09:19:10', 'updated_at' => '2025-04-20 09:19:10', 'deleted_at' => NULL],
+            ['id' => 62, 'menu_id' => 10, 'role_id' => 1, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-20 09:19:29', 'updated_at' => '2025-04-20 09:19:29', 'deleted_at' => NULL],
+            ['id' => 63, 'menu_id' => 10, 'role_id' => 1, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-20 09:19:29', 'updated_at' => '2025-04-20 09:19:44', 'deleted_at' => NULL],
+            ['id' => 64, 'menu_id' => 11, 'role_id' => 1, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-20 09:39:05', 'updated_at' => '2025-04-20 09:39:05', 'deleted_at' => NULL],
+            ['id' => 65, 'menu_id' => 11, 'role_id' => 1, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-20 09:39:29', 'updated_at' => '2025-04-20 09:39:29', 'deleted_at' => NULL],
+            ['id' => 66, 'menu_id' => 11, 'role_id' => 1, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-20 09:39:46', 'updated_at' => '2025-04-20 09:39:46', 'deleted_at' => NULL],
+            ['id' => 67, 'menu_id' => 11, 'role_id' => 1, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-20 09:40:01', 'updated_at' => '2025-04-20 09:40:01', 'deleted_at' => NULL],
+            ['id' => 68, 'menu_id' => 11, 'role_id' => 1, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-20 09:40:19', 'updated_at' => '2025-04-20 09:40:19', 'deleted_at' => NULL],
+            ['id' => 69, 'menu_id' => 11, 'role_id' => 1, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-20 09:40:35', 'updated_at' => '2025-04-20 09:40:35', 'deleted_at' => NULL],
+            ['id' => 70, 'menu_id' => 11, 'role_id' => 1, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-20 09:40:51', 'updated_at' => '2025-04-20 09:40:51', 'deleted_at' => NULL],
+            ['id' => 71, 'menu_id' => 12, 'role_id' => 1, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-20 09:41:11', 'updated_at' => '2025-04-20 09:41:11', 'deleted_at' => NULL],
+            ['id' => 72, 'menu_id' => 12, 'role_id' => 1, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-20 09:41:29', 'updated_at' => '2025-04-20 09:41:29', 'deleted_at' => NULL],
+            ['id' => 73, 'menu_id' => 12, 'role_id' => 1, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-20 09:41:45', 'updated_at' => '2025-04-20 09:41:45', 'deleted_at' => NULL],
+            ['id' => 74, 'menu_id' => 12, 'role_id' => 1, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-20 09:42:03', 'updated_at' => '2025-04-20 09:42:03', 'deleted_at' => NULL],
+            ['id' => 75, 'menu_id' => 12, 'role_id' => 1, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-20 09:42:18', 'updated_at' => '2025-04-20 09:42:18', 'deleted_at' => NULL],
+            ['id' => 76, 'menu_id' => 12, 'role_id' => 1, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-20 09:42:35', 'updated_at' => '2025-04-20 09:42:35', 'deleted_at' => NULL],
+            ['id' => 77, 'menu_id' => 12, 'role_id' => 1, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-20 09:42:49', 'updated_at' => '2025-04-20 09:42:49', 'deleted_at' => NULL],
+            ['id' => 78, 'menu_id' => 1, 'role_id' => 2, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-20 13:22:34', 'updated_at' => '2025-04-20 13:22:34', 'deleted_at' => NULL],
+            ['id' => 79, 'menu_id' => 1, 'role_id' => 2, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-20 13:28:08', 'updated_at' => '2025-04-20 13:28:08', 'deleted_at' => NULL],
+            ['id' => 80, 'menu_id' => 1, 'role_id' => 2, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-20 13:34:07', 'updated_at' => '2025-04-20 13:34:07', 'deleted_at' => NULL],
+            ['id' => 81, 'menu_id' => 1, 'role_id' => 2, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-20 13:34:46', 'updated_at' => '2025-04-20 13:34:46', 'deleted_at' => NULL],
+            ['id' => 82, 'menu_id' => 1, 'role_id' => 2, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-20 13:35:19', 'updated_at' => '2025-04-20 13:35:19', 'deleted_at' => NULL],
+            ['id' => 83, 'menu_id' => 1, 'role_id' => 2, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-20 13:35:47', 'updated_at' => '2025-04-20 13:35:47', 'deleted_at' => NULL],
+            ['id' => 84, 'menu_id' => 1, 'role_id' => 2, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-20 13:36:05', 'updated_at' => '2025-04-20 13:36:05', 'deleted_at' => NULL],
+            ['id' => 92, 'menu_id' => 3, 'role_id' => 2, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-20 13:42:19', 'updated_at' => '2025-04-20 13:42:19', 'deleted_at' => NULL],
+            ['id' => 93, 'menu_id' => 3, 'role_id' => 2, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-20 13:42:19', 'updated_at' => '2025-04-20 13:42:19', 'deleted_at' => NULL],
+            ['id' => 94, 'menu_id' => 3, 'role_id' => 2, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-20 13:42:19', 'updated_at' => '2025-04-20 13:42:19', 'deleted_at' => NULL],
+            ['id' => 95, 'menu_id' => 3, 'role_id' => 2, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-20 13:42:19', 'updated_at' => '2025-04-20 13:42:19', 'deleted_at' => NULL],
+            ['id' => 96, 'menu_id' => 3, 'role_id' => 2, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-20 13:42:19', 'updated_at' => '2025-04-20 13:42:19', 'deleted_at' => NULL],
+            ['id' => 97, 'menu_id' => 3, 'role_id' => 2, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-20 13:42:19', 'updated_at' => '2025-04-20 13:42:19', 'deleted_at' => NULL],
+            ['id' => 98, 'menu_id' => 3, 'role_id' => 2, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-20 13:42:19', 'updated_at' => '2025-04-20 13:42:19', 'deleted_at' => NULL],
+            ['id' => 99, 'menu_id' => 14, 'role_id' => 2, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-20 13:47:57', 'updated_at' => '2025-04-20 13:47:57', 'deleted_at' => NULL],
+            ['id' => 100, 'menu_id' => 14, 'role_id' => 2, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-20 13:47:57', 'updated_at' => '2025-04-20 13:47:57', 'deleted_at' => NULL],
+            ['id' => 101, 'menu_id' => 14, 'role_id' => 2, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-20 13:47:57', 'updated_at' => '2025-04-20 13:47:57', 'deleted_at' => NULL],
+            ['id' => 102, 'menu_id' => 14, 'role_id' => 2, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-20 13:47:57', 'updated_at' => '2025-04-20 13:47:57', 'deleted_at' => NULL],
+            ['id' => 103, 'menu_id' => 14, 'role_id' => 2, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-20 13:47:57', 'updated_at' => '2025-04-20 13:47:57', 'deleted_at' => NULL],
+            ['id' => 104, 'menu_id' => 14, 'role_id' => 2, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-20 13:47:57', 'updated_at' => '2025-04-20 13:47:57', 'deleted_at' => NULL],
+            ['id' => 105, 'menu_id' => 14, 'role_id' => 2, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-20 13:47:57', 'updated_at' => '2025-04-20 13:47:57', 'deleted_at' => NULL],
+            ['id' => 106, 'menu_id' => 15, 'role_id' => 2, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-21 03:55:14', 'updated_at' => '2025-04-21 03:55:14', 'deleted_at' => NULL],
+            ['id' => 107, 'menu_id' => 15, 'role_id' => 2, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-22 02:24:08', 'updated_at' => '2025-04-22 02:24:08', 'deleted_at' => NULL],
+            ['id' => 108, 'menu_id' => 15, 'role_id' => 2, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-22 02:38:11', 'updated_at' => '2025-04-22 02:38:11', 'deleted_at' => NULL],
+            ['id' => 109, 'menu_id' => 15, 'role_id' => 2, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-22 02:38:38', 'updated_at' => '2025-04-22 02:38:38', 'deleted_at' => NULL],
+            ['id' => 110, 'menu_id' => 15, 'role_id' => 2, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-22 02:44:32', 'updated_at' => '2025-04-22 02:44:32', 'deleted_at' => NULL],
+            ['id' => 111, 'menu_id' => 15, 'role_id' => 2, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-22 03:04:26', 'updated_at' => '2025-04-22 03:04:26', 'deleted_at' => NULL],
+            ['id' => 112, 'menu_id' => 15, 'role_id' => 2, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-22 03:04:44', 'updated_at' => '2025-04-22 03:04:44', 'deleted_at' => NULL],
+            ['id' => 113, 'menu_id' => 16, 'role_id' => 2, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-22 03:05:02', 'updated_at' => '2025-04-22 03:05:02', 'deleted_at' => NULL],
+            ['id' => 114, 'menu_id' => 16, 'role_id' => 2, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-22 03:08:31', 'updated_at' => '2025-04-22 03:08:31', 'deleted_at' => NULL],
+            ['id' => 115, 'menu_id' => 16, 'role_id' => 2, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-22 03:17:15', 'updated_at' => '2025-04-22 03:17:15', 'deleted_at' => NULL],
+            ['id' => 116, 'menu_id' => 16, 'role_id' => 2, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-22 03:17:30', 'updated_at' => '2025-04-22 03:17:30', 'deleted_at' => NULL],
+            ['id' => 117, 'menu_id' => 16, 'role_id' => 2, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-22 03:17:45', 'updated_at' => '2025-04-22 03:17:45', 'deleted_at' => NULL],
+            ['id' => 118, 'menu_id' => 16, 'role_id' => 2, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-22 04:08:19', 'updated_at' => '2025-04-22 04:08:19', 'deleted_at' => NULL],
+            ['id' => 119, 'menu_id' => 16, 'role_id' => 2, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-22 04:08:34', 'updated_at' => '2025-04-22 04:08:34', 'deleted_at' => NULL],
+            ['id' => 120, 'menu_id' => 17, 'role_id' => 2, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-22 04:29:29', 'updated_at' => '2025-04-22 04:29:29', 'deleted_at' => NULL],
+            ['id' => 121, 'menu_id' => 17, 'role_id' => 2, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-22 04:33:56', 'updated_at' => '2025-04-22 04:33:56', 'deleted_at' => NULL],
+            ['id' => 122, 'menu_id' => 17, 'role_id' => 2, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-23 08:33:49', 'updated_at' => '2025-04-23 08:33:49', 'deleted_at' => NULL],
+            ['id' => 123, 'menu_id' => 17, 'role_id' => 2, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-23 08:33:49', 'updated_at' => '2025-04-23 08:33:49', 'deleted_at' => NULL],
+            ['id' => 124, 'menu_id' => 17, 'role_id' => 2, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-23 08:35:04', 'updated_at' => '2025-04-23 08:35:04', 'deleted_at' => NULL],
+            ['id' => 125, 'menu_id' => 17, 'role_id' => 2, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-23 08:35:22', 'updated_at' => '2025-04-23 08:35:22', 'deleted_at' => NULL],
+            ['id' => 126, 'menu_id' => 17, 'role_id' => 2, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-23 08:35:38', 'updated_at' => '2025-04-23 08:35:38', 'deleted_at' => NULL],
+            ['id' => 127, 'menu_id' => 18, 'role_id' => 2, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-23 08:35:55', 'updated_at' => '2025-04-23 08:35:55', 'deleted_at' => NULL],
+            ['id' => 128, 'menu_id' => 18, 'role_id' => 2, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-23 08:37:35', 'updated_at' => '2025-04-23 08:37:35', 'deleted_at' => NULL],
+            ['id' => 129, 'menu_id' => 18, 'role_id' => 2, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-23 08:37:49', 'updated_at' => '2025-04-23 08:37:49', 'deleted_at' => NULL],
+            ['id' => 130, 'menu_id' => 18, 'role_id' => 2, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-23 08:38:05', 'updated_at' => '2025-04-23 08:38:05', 'deleted_at' => NULL],
+            ['id' => 131, 'menu_id' => 18, 'role_id' => 2, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-23 08:38:21', 'updated_at' => '2025-04-23 08:38:21', 'deleted_at' => NULL],
+            ['id' => 132, 'menu_id' => 18, 'role_id' => 2, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-23 08:38:33', 'updated_at' => '2025-04-23 08:38:33', 'deleted_at' => NULL],
+            ['id' => 133, 'menu_id' => 18, 'role_id' => 2, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-23 08:38:46', 'updated_at' => '2025-04-23 08:38:46', 'deleted_at' => NULL],
+            ['id' => 134, 'menu_id' => 19, 'role_id' => 2, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-23 08:42:35', 'updated_at' => '2025-04-23 08:42:35', 'deleted_at' => NULL],
+            ['id' => 135, 'menu_id' => 19, 'role_id' => 2, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-23 08:43:16', 'updated_at' => '2025-04-23 08:43:16', 'deleted_at' => NULL],
+            ['id' => 136, 'menu_id' => 19, 'role_id' => 2, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-23 08:43:35', 'updated_at' => '2025-04-23 08:43:35', 'deleted_at' => NULL],
+            ['id' => 137, 'menu_id' => 19, 'role_id' => 2, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-23 08:43:47', 'updated_at' => '2025-04-23 08:43:47', 'deleted_at' => NULL],
+            ['id' => 138, 'menu_id' => 19, 'role_id' => 2, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-16 08:43:59', 'updated_at' => '2025-04-23 08:43:59', 'deleted_at' => NULL],
+            ['id' => 139, 'menu_id' => 19, 'role_id' => 2, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-23 08:44:12', 'updated_at' => '2025-04-23 08:44:12', 'deleted_at' => NULL],
+            ['id' => 140, 'menu_id' => 19, 'role_id' => 2, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-23 08:44:28', 'updated_at' => '2025-04-23 08:44:28', 'deleted_at' => NULL],
+            ['id' => 141, 'menu_id' => 20, 'role_id' => 2, 'permission_id' => 1, 'is_active' => 1, 'created_at' => '2025-04-23 08:44:45', 'updated_at' => '2025-04-23 08:44:45', 'deleted_at' => NULL],
+            ['id' => 142, 'menu_id' => 20, 'role_id' => 2, 'permission_id' => 2, 'is_active' => 1, 'created_at' => '2025-04-23 08:45:13', 'updated_at' => '2025-04-23 08:45:13', 'deleted_at' => NULL],
+            ['id' => 143, 'menu_id' => 20, 'role_id' => 2, 'permission_id' => 3, 'is_active' => 1, 'created_at' => '2025-04-23 08:45:29', 'updated_at' => '2025-04-23 08:45:29', 'deleted_at' => NULL],
+            ['id' => 144, 'menu_id' => 20, 'role_id' => 2, 'permission_id' => 4, 'is_active' => 1, 'created_at' => '2025-04-23 08:45:42', 'updated_at' => '2025-04-23 08:45:42', 'deleted_at' => NULL],
+            ['id' => 145, 'menu_id' => 20, 'role_id' => 2, 'permission_id' => 5, 'is_active' => 1, 'created_at' => '2025-04-23 08:46:14', 'updated_at' => '2025-04-23 08:46:14', 'deleted_at' => NULL],
+            ['id' => 146, 'menu_id' => 20, 'role_id' => 2, 'permission_id' => 6, 'is_active' => 1, 'created_at' => '2025-04-23 08:46:25', 'updated_at' => '2025-04-23 08:46:25', 'deleted_at' => NULL],
+            ['id' => 147, 'menu_id' => 20, 'role_id' => 2, 'permission_id' => 7, 'is_active' => 1, 'created_at' => '2025-04-23 08:46:39', 'updated_at' => '2025-04-23 08:46:39', 'deleted_at' => NULL],
+        ];
+
+        // Membagi data menjadi chunk agar lebih efisien saat proses insert
+        foreach (array_chunk($permissions, 50) as $chunk) {
+            DB::table('menu_role_permissions')->insert($chunk);
+        }
+    }
+}
+
+
+===============================================
+File: MenuSeeder.php
+===============================================
+
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Menu;
+use Carbon\Carbon;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class MenuSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        DB::table('menus')->insert([
+            ['id' => 1, 'name' => 'Beranda', 'icon' => 'mdi-home', 'parent_id' => null, 'url' => 'home', 'order' => 1, 'is_active' => 1, 'match_segment' => 'home', 'created_at' => '2025-04-16 10:10:24', 'updated_at' => '2025-04-16 10:10:24', 'deleted_at' => null, 'is_data_complete' => 0],
+            ['id' => 2, 'name' => 'Master', 'icon' => 'mdi-text-box-multiple', 'parent_id' => null, 'url' => null, 'order' => 2, 'is_active' => 1, 'match_segment' => 'master', 'created_at' => '2025-04-16 10:10:24', 'updated_at' => '2025-04-16 10:10:24', 'deleted_at' => null, 'is_data_complete' => 0],
+            ['id' => 3, 'name' => 'Menu', 'icon' => null, 'parent_id' => 2, 'url' => 'menu.index', 'order' => 1, 'is_active' => 1, 'match_segment' => 'menu', 'created_at' => '2025-04-16 10:10:24', 'updated_at' => '2025-04-16 10:10:24', 'deleted_at' => null, 'is_data_complete' => 0],
+            ['id' => 4, 'name' => 'Role & Permission', 'icon' => null, 'parent_id' => 2, 'url' => null, 'order' => 2, 'is_active' => 1, 'match_segment' => 'role-&-permission', 'created_at' => '2025-04-16 10:10:24', 'updated_at' => '2025-04-16 10:10:24', 'deleted_at' => null, 'is_data_complete' => 0],
+            ['id' => 5, 'name' => 'test', 'icon' => 'mdi-minus', 'parent_id' => null, 'url' => 'user_extras', 'order' => 3, 'is_active' => 1, 'match_segment' => null, 'created_at' => '2025-04-16 10:15:03', 'updated_at' => '2025-04-16 10:15:03', 'deleted_at' => null, 'is_data_complete' => 0],
+            ['id' => 6, 'name' => 'Lembaga Pendidikan', 'icon' => 'mdi-bank', 'parent_id' => null, 'url' => 'master_sklh', 'order' => 4, 'is_active' => 1, 'match_segment' => null, 'created_at' => '2025-04-19 01:47:52', 'updated_at' => '2025-04-19 15:19:00', 'deleted_at' => null, 'is_data_complete' => 0],
+            ['id' => 7, 'name' => 'Permohonan Magang', 'icon' => 'mdi-inbox', 'parent_id' => null, 'url' => 'proposal_masuk', 'order' => 5, 'is_active' => 1, 'match_segment' => null, 'created_at' => '2025-04-19 01:49:29', 'updated_at' => '2025-04-26 08:56:50', 'deleted_at' => null, 'is_data_complete' => 0],
+            ['id' => 10, 'name' => 'Balasan Magang', 'icon' => 'mdi-send', 'parent_id' => null, 'url' => 'proposal_keluar', 'order' => 6, 'is_active' => 1, 'match_segment' => null, 'created_at' => '2025-04-19 01:51:58', 'updated_at' => '2025-05-06 08:40:38', 'deleted_at' => null, 'is_data_complete' => 0],
+            ['id' => 11, 'name' => 'Nota Dinas Magang', 'icon' => 'mdi-note-text-outline', 'parent_id' => null, 'url' => 'nota_dinas.daftar', 'order' => 7, 'is_active' => 1, 'match_segment' => null, 'created_at' => '2025-04-19 02:00:56', 'updated_at' => '2025-05-12 01:54:45', 'deleted_at' => null, 'is_data_complete' => 0],
+            ['id' => 12, 'name' => 'Laporan & Sertifikat', 'icon' => 'mdi-decagram', 'parent_id' => null, 'url' => 'proposal_final.daftar', 'order' => 8, 'is_active' => 1, 'match_segment' => null, 'created_at' => '2025-04-19 02:02:03', 'updated_at' => '2025-05-15 20:02:51', 'deleted_at' => null, 'is_data_complete' => 0],
+            ['id' => 13, 'name' => 'Kelola Penilai', 'icon' => 'mdi-account-group', 'parent_id' => null, 'url' => 'master_petugas', 'order' => 9, 'is_active' => 1, 'match_segment' => null, 'created_at' => '2025-04-19 02:02:42', 'updated_at' => '2025-04-19 09:58:38', 'deleted_at' => null, 'is_data_complete' => 0],
+            ['id' => 14, 'name' => 'Lengkapi Data', 'icon' => 'mdi-plus', 'parent_id' => null, 'url' => 'lengkapi_data', 'order' => 3, 'is_active' => 1, 'match_segment' => null, 'created_at' => '2025-04-20 06:45:44', 'updated_at' => '2025-04-21 02:08:15', 'deleted_at' => null, 'is_data_complete' => 0],
+            ['id' => 15, 'name' => 'Detail Data', 'icon' => 'mdi-eye', 'parent_id' => null, 'url' => 'detail_data', 'order' => 4, 'is_active' => 1, 'match_segment' => null, 'created_at' => '2025-04-20 20:54:28', 'updated_at' => '2025-04-21 19:36:56', 'deleted_at' => null, 'is_data_complete' => 0],
+            ['id' => 16, 'name' => 'Edit Data', 'icon' => 'mdi-pencil', 'parent_id' => null, 'url' => 'edit_data', 'order' => 5, 'is_active' => 1, 'match_segment' => null, 'created_at' => '2025-04-21 00:49:43', 'updated_at' => '2025-04-21 20:04:12', 'deleted_at' => null, 'is_data_complete' => 0],
+            ['id' => 17, 'name' => 'Buat Permohonan', 'icon' => 'mdi-plus', 'parent_id' => null, 'url' => 'buat_permohonan', 'order' => 6, 'is_active' => 1, 'match_segment' => null, 'created_at' => '2025-04-21 21:25:58', 'updated_at' => '2025-04-21 21:29:02', 'deleted_at' => null, 'is_data_complete' => 0],
+            ['id' => 18, 'name' => 'Daftar Permohonan', 'icon' => 'mdi-email', 'parent_id' => null, 'url' => 'user.daftar_permohonan', 'order' => 7, 'is_active' => 1, 'match_segment' => null, 'created_at' => '2025-04-23 01:20:40', 'updated_at' => '2025-04-28 00:40:09', 'deleted_at' => null, 'is_data_complete' => 0],
+            ['id' => 19, 'name' => 'Daftar Diterima', 'icon' => 'mdi-inbox', 'parent_id' => null, 'url' => 'user.daftar_permohonanmasuk', 'order' => 8, 'is_active' => 1, 'match_segment' => null, 'created_at' => '2025-04-23 01:21:44', 'updated_at' => '2025-05-07 19:30:16', 'deleted_at' => null, 'is_data_complete' => 0],
+            ['id' => 20, 'name' => 'Daftar Laporan', 'icon' => 'mdi-file', 'parent_id' => null, 'url' => 'user.daftar_laporanmagang', 'order' => 9, 'is_active' => 1, 'match_segment' => null, 'created_at' => '2025-04-23 01:22:29', 'updated_at' => '2025-05-15 04:32:03', 'deleted_at' => null, 'is_data_complete' => 0],
+        ]);
+    }
+}
+
+
+===============================================
+File: OldMagangSeeder.php
+===============================================
+
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
+class OldMagangSeeder extends Seeder
+{
+    public static array $permintaanIdMap = [];
+    public static array $masterMgngIdMap = [];
+
+    public function run(): void
+    {
+        // --- PERUBAHAN ---
+        // TRUNCATE DIHAPUS untuk semua tabel terkait
+
+        $oldMagang = DB::connection('mysql_old')->table('master_mgng')->get();
+
+        foreach ($oldMagang as $magang) {
+            // Cek duplikasi berdasarkan nomor surat permintaan untuk menghindari data ganda
+            if (DB::table('permintaan_mgng')->where('nomor_surat_permintaan', $magang->nomor_surat_permintaan)->exists()) {
+                continue;
+            }
+
+            if (!isset(OldMasterSklhSeeder::$sekolahIdMap[$magang->id_sklh])) {
+                continue;
+            }
+
+            // 1. Insert ke master_mgng
+            $newMasterMgngId = DB::table('master_mgng')->insertGetId([
+                'master_sklh_id' => OldMasterSklhSeeder::$sekolahIdMap[$magang->id_sklh],
+                'created_at' => $magang->created_at,
+                'updated_at' => $magang->updated_at,
+            ]);
+
+            self::$masterMgngIdMap[$magang->id] = $newMasterMgngId;
+
+            // 2. Insert ke permintaan_mgng
+            $newPermintaanMgngId = DB::table('permintaan_mgng')->insertGetId([
+                'master_mgng_id' => $newMasterMgngId,
+                'nomor_surat_permintaan' => $magang->nomor_surat_permintaan,
+                'tanggal_surat_permintaan' => $magang->tanggal_surat_permintaan,
+                // ... kolom lainnya ...
+                'created_at' => $magang->created_at,
+                'updated_at' => $magang->updated_at,
+            ]);
+
+            self::$permintaanIdMap[$magang->id] = $newPermintaanMgngId;
+
+            // 3. Insert ke balasan_mgng
+            if ($magang->nomor_surat_balasan) {
+                $newMemberId = null;
+                if (!is_null($magang->id_bdng_member) && isset(OldMasterBidangMemberSeeder::$memberIdMap[$magang->id_bdng_member])) {
+                    $newMemberId = OldMasterBidangMemberSeeder::$memberIdMap[$magang->id_bdng_member];
+                }
+
+                DB::table('balasan_mgng')->insert([
+                    'master_mgng_id' => $newMasterMgngId,
+                    'permintaan_mgng_id' => $newPermintaanMgngId,
+                    'nomor_surat_balasan' => $magang->nomor_surat_balasan,
+                    // ... kolom lainnya ...
+                    'id_bdng_member' => $newMemberId,
+                    'created_at' => $magang->created_at,
+                    'updated_at' => $magang->updated_at,
+                ]);
+            }
+        }
+    }
+}
+
+
+===============================================
+File: OldMasterBidangMemberSeeder.php
+===============================================
+
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
+class OldMasterBidangMemberSeeder extends Seeder
+{
+    public static array $memberIdMap = [];
+
+    public function run(): void
+    {
+        // TRUNCATE DIHAPUS agar tidak menghapus data yang sudah ada
+
+        $oldMembers = DB::connection('mysql_old')->table('master_bdng_member')->get();
+
+        foreach ($oldMembers as $member) {
+            $newId = null;
+
+            // --- PERUBAHAN UTAMA ---
+            // Cek apakah member dengan NIP ini sudah ada di database baru.
+            // Hanya lakukan pengecekan jika NIP tidak kosong.
+            $existingMember = null;
+            if (!empty($member->nip_pejabat)) {
+                $existingMember = DB::table('master_bdng_member')->where('nip_pejabat', $member->nip_pejabat)->first();
+            }
+
+            if ($existingMember) {
+                // JIKA SUDAH ADA: Jangan insert data baru.
+                // Cukup ambil ID dari data yang sudah ada untuk digunakan di map.
+                $newId = $existingMember->id;
+            } else {
+                // JIKA BELUM ADA: Insert sebagai data baru dan dapatkan ID-nya.
+                $newId = DB::table('master_bdng_member')->insertGetId([
+                    'id_bdng' => $member->id_bdng,
+                    'nama_pejabat' => $member->nama_pejabat,
+                    'nip_pejabat' => $member->nip_pejabat,
+                    'pangkat_pejabat' => $member->pangkat_pejabat,
+                    'golongan_pejabat' => $member->golongan_pejabat,
+                    'ruang_pejabat' => $member->ruang_pejabat,
+                    'jabatan_pejabat' => $member->jabatan_pejabat,
+                    'sub_bidang_pejabat' => $member->sub_bidang_pejabat,
+                    'created_at' => $member->created_at,
+                    'updated_at' => $member->updated_at,
+                ]);
+            }
+            // --- AKHIR PERUBAHAN ---
+
+            // Simpan pemetaan ID lama ke ID baru (baik yang baru dibuat maupun yang sudah ada)
+            self::$memberIdMap[$member->id] = $newId;
+        }
+    }
+}
+
+
+===============================================
+File: OldMasterBidangSeeder.php
+===============================================
+
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Carbon\Carbon;
+
+class OldMasterBidangSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run(): void
+    {
+        // --- PERUBAHAN ---
+        // TRUNCATE DIHAPUS agar tidak menghapus data bidang yang sudah ada di produksi.
+
+        $now = Carbon::now();
+        $daftar_bidang = [
+            ['nama_bidang' => 'Sekretariat'],
+            ['nama_bidang' => 'Bidang Informasi Komunikasi Publik'],
+            ['nama_bidang' => 'Bidang Persandian dan Keamanan Informasi'],
+            ['nama_bidang' => 'Bidang Aplikasi Informatika'],
+            ['nama_bidang' => 'Bidang Data dan Statistik'],
+            ['nama_bidang' => 'Dinas Komunikasi dan Informatika'],
+        ];
+
+        foreach ($daftar_bidang as $bidang) {
+            // --- PERUBAHAN ---
+            // Gunakan updateOrInsert untuk menghindari error duplikasi.
+            // Jika nama_bidang sudah ada, data tidak akan diubah/ditambah.
+            // Jika belum ada, data baru akan ditambahkan.
+            DB::table('master_bdng')->updateOrInsert(
+                ['nama_bidang' => $bidang['nama_bidang']], // Kondisi untuk cek
+                ['created_at' => $now, 'updated_at' => $now] // Data untuk diinsert/update
+            );
+        }
+    }
+}
+
+
+===============================================
+File: OldMasterSklhSeeder.php
+===============================================
+
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class OldMasterSklhSeeder extends Seeder
+{
+    /**
+     * @var array<int, int>
+     */
+    public static array $sekolahIdMap = [];
+
+    public function run(): void
+    {
+        // --- PERUBAHAN ---
+        // TRUNCATE DIHAPUS
+
+        $oldSekolah = DB::connection('mysql_old')->table('master_sklh')->get();
+
+        foreach ($oldSekolah as $sekolah) {
+            // Cek apakah user_id ada di map (user mungkin di-skip karena duplikat)
+            if (!isset(OldUserSeeder::$userIdMap[$sekolah->id_user])) {
+                continue;
+            }
+
+            // Insert satu per satu dan dapatkan ID baru
+            $newSekolahId = DB::table('master_sklh')->insertGetId([
+                // 'id' tidak di-set
+                'id_user' => OldUserSeeder::$userIdMap[$sekolah->id_user],
+                'jenis_sklh' => $sekolah->jenis_sklh,
+                'alamat_sklh' => $sekolah->alamat_sklh,
+                'kabko_sklh' => $sekolah->kabko_sklh,
+                'telp_sklh' => $sekolah->telp_sklh,
+                'akreditasi_sklh' => $sekolah->akreditasi_sklh,
+                'no_akreditasi_sklh' => $sekolah->no_akreditasi_sklh,
+                'scan_surat_akreditasi_sklh' => $sekolah->scan_surat_akreditasi_sklh,
+                'nama_narahubung' => $sekolah->nama_narahubung,
+                'jenis_kelamin_narahubung' => $sekolah->jenis_kelamin_narahubung,
+                'jabatan_narahubung' => $sekolah->jabatan_narahubung,
+                'handphone_narahubung' => $sekolah->handphone_narahubung,
+                'created_at' => $sekolah->created_at,
+                'updated_at' => $sekolah->updated_at,
+            ]);
+
+            // Simpan pemetaan ID lama ke ID baru
+            self::$sekolahIdMap[$sekolah->id] = $newSekolahId;
+        }
+    }
+}
+
+
+===============================================
+File: OldNotaDinasSeeder.php
+===============================================
+
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
+class OldNotaDinasSeeder extends Seeder
+{
+    public function run(): void
+    {
+        // --- PERUBAHAN ---
+        // TRUNCATE DIHAPUS
+
+        $oldNotaDinas = DB::connection('mysql_old')->table('nota_dnas')->get();
+
+        foreach ($oldNotaDinas as $nota) {
+
+            // Cek dependensi utama: jika magang-nya saja tidak ada di map, lewati
+            if (!isset(OldMagangSeeder::$masterMgngIdMap[$nota->id_mgng])) {
+                continue;
+            }
+
+            // Cek duplikasi berdasarkan nomor nota dinas
+            if (!is_null($nota->nomor_nota_dinas) && DB::table('nota_dinas')->where('nomor_nota_dinas', $nota->nomor_nota_dinas)->exists()) {
+                continue;
+            }
+
+            // Mapping untuk member
+            $newMemberId = null;
+            if (!is_null($nota->id_bdng_member) && isset(OldMasterBidangMemberSeeder::$memberIdMap[$nota->id_bdng_member])) {
+                $newMemberId = OldMasterBidangMemberSeeder::$memberIdMap[$nota->id_bdng_member];
+            }
+
+            // Ambil semua ID baru dari map
+            $newMasterMgngId = OldMagangSeeder::$masterMgngIdMap[$nota->id_mgng];
+            $newPermintaanMgngId = OldMagangSeeder::$permintaanIdMap[$nota->id_mgng];
+
+            $newNotaDinasId = DB::table('nota_dinas')->insertGetId([
+                'master_mgng_id' => $newMasterMgngId,
+                'permintaan_mgng_id' => $newPermintaanMgngId,
+                'master_bdng_id' => $nota->id_bdng,
+                // ... kolom lainnya ...
+                'bdng_member_id' => $newMemberId,
+                'created_at' => $nota->created_at,
+                'updated_at' => $nota->updated_at,
+            ]);
+
+            // Migrasi item nota dinas
+            $oldNotaItems = DB::connection('mysql_old')->table('nota_dnas_item')->where('id_nota_dnas', $nota->id)->get();
+            foreach ($oldNotaItems as $item) {
+                if (!isset(OldPesertaSeeder::$pesertaIdMap[$item->id_psrt])) {
+                    continue;
+                }
+
+                DB::table('nota_dinas_item')->insert([
+                    'nota_dinas_id' => $newNotaDinasId,
+                    'master_psrt_id' => OldPesertaSeeder::$pesertaIdMap[$item->id_psrt],
+                    'created_at' => $item->created_at,
+                    'updated_at' => $item->updated_at,
+                ]);
+            }
+        }
+    }
+}
+
+
+===============================================
+File: OldPesertaSeeder.php
+===============================================
+
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class OldPesertaSeeder extends Seeder
+{
+    /**
+     * @var array<int, int>
+     */
+    public static array $pesertaIdMap = [];
+
+    public function run(): void
+    {
+        // --- PERUBAHAN ---
+        // TRUNCATE DIHAPUS
+
+        $oldPeserta = DB::connection('mysql_old')->table('master_psrt')->get();
+
+        foreach ($oldPeserta as $peserta) {
+            if (!isset(OldMagangSeeder::$permintaanIdMap[$peserta->id_mgng])) {
+                continue;
+            }
+
+            $newMemberId = null;
+            if (!is_null($peserta->id_bdng_member) && isset(OldMasterBidangMemberSeeder::$memberIdMap[$peserta->id_bdng_member])) {
+                $newMemberId = OldMasterBidangMemberSeeder::$memberIdMap[$peserta->id_bdng_member];
+            }
+
+            // Insert satu per satu untuk mendapatkan ID baru
+            $newPesertaId = DB::table('master_psrt')->insertGetId([
+                // 'id' tidak di-set
+                'permintaan_mgng_id' => OldMagangSeeder::$permintaanIdMap[$peserta->id_mgng],
+                'nama_peserta' => $peserta->nama_peserta,
+                'jenis_kelamin' => $peserta->jenis_kelamin,
+                'nik_peserta' => $peserta->nik_peserta,
+                'nis_peserta' => $peserta->nis_peserta,
+                'program_studi' => $peserta->program_studi,
+                'no_handphone_peserta' => $peserta->no_handphone_peserta,
+                'email_peserta' => $peserta->email_peserta,
+                'nilai_akhir' => 0,
+                'status_penilaian' => $peserta->status_penilaian,
+                'scan_penilaian' => $peserta->scan_penilaian,
+                'status_scan_penilaian' => $peserta->status_scan_penilaian,
+                'catatan' => $peserta->catatan,
+                'scan_sertifikat' => $peserta->scan_sertifikat,
+                'status_sertifikat' => $peserta->status_sertifikat,
+                'id_bdng_member' => $newMemberId,
+                'created_at' => $peserta->created_at,
+                'updated_at' => $peserta->updated_at,
+            ]);
+
+            self::$pesertaIdMap[$peserta->id] = $newPesertaId;
+        }
+    }
+}
+
+
+===============================================
+File: OldUserSeeder.php
+===============================================
+
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+
+class OldUserSeeder extends Seeder
+{
+    /**
+     * Peta untuk menghubungkan ID pengguna lama dengan ID baru.
+     * @var array
+     */
+    public static array $userIdMap = [];
+
+    /**
+     * Jalankan proses seeding database.
+     *
+     * @return void
+     */
+    public function run(): void
+    {
+        // Mengambil semua pengguna dari koneksi database lama.
+        $oldUsers = DB::connection('mysql_old')->table('users')->get();
+
+        foreach ($oldUsers as $user) {
+            // Cek apakah email dari data lama sudah ada di database baru.
+            if (DB::table('users')->where('email', $user->email)->exists()) {
+                // Jika email sudah terdaftar, lewati pengguna ini untuk menghindari duplikat.
+                continue;
+            }
+
+            // Menentukan role_id berdasarkan kolom 'privilege' dari data lama.
+            $role_id = match ($user->privilege) {
+                'superadmin', 'admin', 'adminbidang' => 1, // Ditetapkan sebagai Admin
+                'operator' => 2, // Ditetapkan sebagai Operator
+                default => 2, // Default adalah Operator
+            };
+
+            // --- PERUBAHAN UTAMA PADA PASSWORD ---
+            // Semua password pengguna diatur ulang menjadi 'Sima123456!' dan di-hash.
+            $newPassword = Hash::make('Sima123456!');
+
+            // Memasukkan data pengguna ke database baru dan mendapatkan ID-nya.
+            $newUserId = DB::table('users')->insertGetId([
+                'role_id' => $role_id,
+                'fullname' => $user->name,
+                'username' => Str::slug($user->name, '_') . '_' . $user->id,
+                'email' => $user->email,
+                'password' => $newPassword, // Menggunakan password baru yang sudah di-hash
+                'akun_diverifikasi' => $user->akun_diverifikasi,
+                'is_active' => 1,
+                'remember_token' => $user->remember_token,
+                'email_verified_at' => now(),
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+                'is_data_completed' => 1,
+            ]);
+
+            // Menyimpan pemetaan ID lama ke ID baru untuk digunakan di seeder lain jika diperlukan.
+            self::$userIdMap[$user->id] = $newUserId;
+        }
+    }
+}
+
+
+===============================================
+File: PermissionSeeder.php
+===============================================
+
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Permission;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+
+class PermissionSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        $permissions = [
+            ['name' => 'View', 'code' => 'can_view', 'action_name' => 'index', 'http_method' => 'GET'],
+            ['name' => 'View Detail', 'code' => 'can_view_detail', 'action_name' => 'show', 'http_method' => 'GET'],
+            ['name' => 'Create', 'code' => 'can_create', 'action_name' => 'create', 'http_method' => 'GET'],
+            ['name' => 'Store', 'code' => 'can_store', 'action_name' => 'store', 'http_method' => 'POST'],
+            ['name' => 'Edit', 'code' => 'can_edit', 'action_name' => 'edit', 'http_method' => 'GET'],
+            ['name' => 'Update', 'code' => 'can_update', 'action_name' => 'update', 'http_method' => 'PUT'],
+            ['name' => 'Delete', 'code' => 'can_delete', 'action_name' => 'destroy', 'http_method' => 'DELETE'],
+        ];
+
+        foreach ($permissions as $permission) {
+            Permission::create($permission);
+        }
+    }
+}
+
+
+===============================================
+File: RoleSeeder.php
+===============================================
+
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Role;
+use Carbon\Carbon;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+
+class RoleSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        //
+        // $roleArray = [
+        //     [
+        //         'name' => 'Superadmin',
+        //         'is_active' => true,
+        //         'created_at' => Carbon::now(),
+        //         'updated_at' => Carbon::now(),
+        //     ],
+        //     [
+        //         'name' => 'Verifikator',
+        //         'is_active' => true,
+        //         'created_at' => Carbon::now(),
+        //         'updated_at' => Carbon::now(),
+        //     ],
+        //     [
+        //         'name' => 'Perangkat Daerah',
+        //         'is_active' => true,
+        //         'created_at' => Carbon::now(),
+        //         'updated_at' => Carbon::now(),
+        //     ],
+        // ];
+
+        // Role::insert($roleArray);
+
+        $roles = [
+            ['name' => 'Super Admin'],
+            ['name' => 'User'],
+        ];
+
+        foreach ($roles as $role) {
+            Role::create($role);
+        }
+    }
+}
+
+
+===============================================
+File: UserSeeder.php
+===============================================
+
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+
+class UserSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+{
+    $userArray1 = [
+        'role_id' => 1,
+        'fullname' => 'Skibidi Bidi',
+        'username' => 'skibidi',
+        'email' => 'skibidi@mail.com',
+        'password' => Hash::make('skibidi'),
+        'is_active' => true,
+        'email_verified_at' => Carbon::now(),
+    ];
+
+    $userArray2 = [
+        'role_id' => 2,
+        'fullname' => 'UPN Veteran Jawa Timur',
+        'username' => 'upnvjt',
+        'email' => 'test@mail.com',
+        'password' => Hash::make('test'),
+        'is_active' => true,
+        'email_verified_at' => Carbon::now(),
+    ];
+
+    User::create($userArray1);
+    User::create($userArray2);
+}
+
+}
+

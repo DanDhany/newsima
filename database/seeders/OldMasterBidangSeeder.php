@@ -16,23 +16,28 @@ class OldMasterBidangSeeder extends Seeder
      */
     public function run(): void
     {
-        // Mengosongkan tabel terlebih dahulu
-        Schema::disableForeignKeyConstraints();
-        // DB::table('master_bdng')->truncate();
-        Schema::enableForeignKeyConstraints();
+        // --- PERUBAHAN ---
+        // TRUNCATE DIHAPUS agar tidak menghapus data bidang yang sudah ada di produksi.
 
-        // Menyiapkan data bidang yang benar
         $now = Carbon::now();
         $daftar_bidang = [
-            ['id' => 1, 'nama_bidang' => 'Sekretariat', 'created_at' => $now, 'updated_at' => $now],
-            ['id' => 2, 'nama_bidang' => 'Bidang Informasi Komunikasi Publik', 'created_at' => $now, 'updated_at' => $now],
-            ['id' => 4, 'nama_bidang' => 'Bidang Persandian dan Keamanan Informasi', 'created_at' => $now, 'updated_at' => $now],
-            ['id' => 5, 'nama_bidang' => 'Bidang Aplikasi Informatika', 'created_at' => $now, 'updated_at' => $now],
-            ['id' => 6, 'nama_bidang' => 'Bidang Data dan Statistik', 'created_at' => $now, 'updated_at' => $now],
-            ['id' => 114, 'nama_bidang' => 'Dinas Komunikasi dan Informatika', 'created_at' => $now, 'updated_at' => $now],
+            ['nama_bidang' => 'Sekretariat'],
+            ['nama_bidang' => 'Bidang Informasi Komunikasi Publik'],
+            ['nama_bidang' => 'Bidang Persandian dan Keamanan Informasi'],
+            ['nama_bidang' => 'Bidang Aplikasi Informatika'],
+            ['nama_bidang' => 'Bidang Data dan Statistik'],
+            ['nama_bidang' => 'Dinas Komunikasi dan Informatika'],
         ];
 
-        // Memasukkan data ke dalam database
-        DB::table('master_bdng')->insert($daftar_bidang);
+        foreach ($daftar_bidang as $bidang) {
+            // --- PERUBAHAN ---
+            // Gunakan updateOrInsert untuk menghindari error duplikasi.
+            // Jika nama_bidang sudah ada, data tidak akan diubah/ditambah.
+            // Jika belum ada, data baru akan ditambahkan.
+            DB::table('master_bdng')->updateOrInsert(
+                ['nama_bidang' => $bidang['nama_bidang']], // Kondisi untuk cek
+                ['created_at' => $now, 'updated_at' => $now] // Data untuk diinsert/update
+            );
+        }
     }
 }

@@ -47,8 +47,8 @@ class DatabaseSeeder extends Seeder
 
             // Seeders untuk setup awal (jika tidak migrasi) bisa dijalankan terpisah
             // UserSeeder::class,
-            // MenuSeeder::class,
-            // MenuRolePermissionSeeder::class,
+            MenuSeeder::class,
+            MenuRolePermissionSeeder::class,
         ]);
 
         Schema::enableForeignKeyConstraints();

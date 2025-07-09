@@ -1,0 +1,1392 @@
+Ingestion Results for d:\_DAN\DevEnv\kominfo-new-sima\src\database\migrations
+Summary
+Directory: migrations
+Files analyzed: 32
+
+Estimated tokens: 10.8k
+
+
+Directory structure:
+└── migrations/
+    ├── 0001_01_01_000000_create_users_table.php
+    ├── 0001_01_01_000001_create_cache_table.php
+    ├── 0001_01_01_000002_create_jobs_table.php
+    ├── 2025_02_04_121328_create_menus_table.php
+    ├── 2025_02_04_123935_create_roles_table.php
+    ├── 2025_02_15_032747_create_permissions_table.php
+    ├── 2025_02_15_033141_create_menu_role_permissions_table.php
+    ├── 2025_04_18_080225_create_master_sklh_table.php
+    ├── 2025_04_19_173819_create_master_bdng_table.php
+    ├── 2025_04_19_173928_create_master_bdng_member_table.php
+    ├── 2025_04_23_035045_add_akun_diverifikasi_to_users_table.php
+    ├── 2025_04_25_063714_create_master_mgng_table.php
+    ├── 2025_04_25_064050_create_permintaan_mgng_table.php
+    ├── 2025_04_28_035616_remove_foreign_key_from_master_bdng_member.php
+    ├── 2025_04_28_035911_change_id_column_in_master_bdng_table.php
+    ├── 2025_04_28_040351_change_id_bdng_column_in_master_bdng_member.php
+    ├── 2025_04_28_040437_add_foreign_key_to_master_bdng_member.php
+    ├── 2025_04_28_042203_change_id_column_in_master_bdng_member.php
+    ├── 2025_04_28_042417_create_balasan_mgng_table.php
+    ├── 2025_04_28_043436_create_master_psrt_table.php
+    ├── 2025_04_30_030752_add_is_data_completed_to_users_table.php
+    ├── 2025_05_01_130212_add_permintaan_mgng_id_to_master_psrt.php
+    ├── 2025_05_01_131318_remove_master_mgng_id_from_master_psrt.php
+    ├── 2025_05_05_141552_add_permintaan_mgng_id_to_balasan_mgng_table.php
+    ├── 2025_05_13_075734_create_nota_dinas_table.php
+    ├── 2025_05_13_080722_create_nota_dinas_item_table.php
+    ├── 2025_05_15_120807_add_permintaan_mgng_id_to_nota_dinas_table.php
+    ├── 2025_06_04_073606_rename_columns_in_master_psrt_table.php
+    ├── 2025_06_04_081346_update_nilai_columns_in_master_psrt_table.php
+    ├── 2025_06_04_081928_add_nilai_teknis_columns_to_master_psrt_table.php
+    ├── 2025_06_04_082852_change_nilai_columns_in_master_psrt_table.php
+    └── 2025_07_03_044339_add_autoincrement_to_id_in_master_bdng_member_table.php
+
+
+File Contents
+
+===============================================
+File: 0001_01_01_000000_create_users_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('role_id')->nullable();
+            $table->string('fullname');
+            $table->string('username')->unique();
+            $table->string('email')->unique();
+            $table->string('password');
+            $table->boolean('is_active')->default(false);
+            $table->rememberToken()->nullable();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create('password_reset_tokens', function (Blueprint $table) {
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+        });
+
+        Schema::create('sessions', function (Blueprint $table) {
+            $table->string('id')->primary();
+            $table->foreignId('user_id')->nullable()->index();
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->longText('payload');
+            $table->integer('last_activity')->index();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('users');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('sessions');
+    }
+};
+
+
+===============================================
+File: 0001_01_01_000001_create_cache_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('cache', function (Blueprint $table) {
+            $table->string('key')->primary();
+            $table->mediumText('value');
+            $table->integer('expiration');
+        });
+
+        Schema::create('cache_locks', function (Blueprint $table) {
+            $table->string('key')->primary();
+            $table->string('owner');
+            $table->integer('expiration');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('cache');
+        Schema::dropIfExists('cache_locks');
+    }
+};
+
+
+===============================================
+File: 0001_01_01_000002_create_jobs_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('jobs', function (Blueprint $table) {
+            $table->id();
+            $table->string('queue')->index();
+            $table->longText('payload');
+            $table->unsignedTinyInteger('attempts');
+            $table->unsignedInteger('reserved_at')->nullable();
+            $table->unsignedInteger('available_at');
+            $table->unsignedInteger('created_at');
+        });
+
+        Schema::create('job_batches', function (Blueprint $table) {
+            $table->string('id')->primary();
+            $table->string('name');
+            $table->integer('total_jobs');
+            $table->integer('pending_jobs');
+            $table->integer('failed_jobs');
+            $table->longText('failed_job_ids');
+            $table->mediumText('options')->nullable();
+            $table->integer('cancelled_at')->nullable();
+            $table->integer('created_at');
+            $table->integer('finished_at')->nullable();
+        });
+
+        Schema::create('failed_jobs', function (Blueprint $table) {
+            $table->id();
+            $table->string('uuid')->unique();
+            $table->text('connection');
+            $table->text('queue');
+            $table->longText('payload');
+            $table->longText('exception');
+            $table->timestamp('failed_at')->useCurrent();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('jobs');
+        Schema::dropIfExists('job_batches');
+        Schema::dropIfExists('failed_jobs');
+    }
+};
+
+
+===============================================
+File: 2025_02_04_121328_create_menus_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('menus', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->text('icon')->nullable();
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->string('url')->nullable();
+            $table->integer('order');
+            $table->boolean('is_active')->default(false);
+            $table->string('match_segment')->nullable();
+            $table->boolean('is_data_complete')->default(false);
+            $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreign('parent_id')->references('id')->on('menus')->onDelete('cascade');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('menus');
+    }
+};
+
+
+===============================================
+File: 2025_02_04_123935_create_roles_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('roles', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+            $table->softDeletes();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('roles');
+    }
+};
+
+
+===============================================
+File: 2025_02_15_032747_create_permissions_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('permissions', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('code');
+            $table->string('action_name')->nullable();
+            $table->string('http_method')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+            $table->softDeletes();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('permissions');
+    }
+};
+
+
+===============================================
+File: 2025_02_15_033141_create_menu_role_permissions_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('menu_role_permissions', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('menu_id')->constrained()->onDelete('cascade');
+            $table->foreignId('role_id')->constrained()->onDelete('cascade');
+            $table->foreignId('permission_id')->constrained()->onDelete('cascade');
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+            $table->softDeletes();
+
+            $table->unique(['menu_id', 'role_id', 'permission_id']);
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('menu_role_permissions');
+    }
+};
+
+
+===============================================
+File: 2025_04_18_080225_create_master_sklh_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('master_sklh', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('id_user')->constrained('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->enum('jenis_sklh', ['sma', 'pgt', 'lpd', 'upt'])->default('sma');
+            $table->string('alamat_sklh');
+            $table->string('kabko_sklh');
+            $table->string('telp_sklh');
+            $table->enum('akreditasi_sklh', ['c','b','a'])->default('c');
+            $table->string('no_akreditasi_sklh');
+            $table->string('scan_surat_akreditasi_sklh');
+            $table->string('nama_narahubung');
+            $table->enum('jenis_kelamin_narahubung',['pria','wanita'])->default('pria');
+            $table->string('jabatan_narahubung');
+            $table->string('handphone_narahubung');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('master_sklh');
+    }
+};
+
+
+===============================================
+File: 2025_04_19_173819_create_master_bdng_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('master_bdng', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('nama_bidang');
+            $table->timestamps();
+          });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('master_bdng');
+    }
+};
+
+
+===============================================
+File: 2025_04_19_173928_create_master_bdng_member_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('master_bdng_member', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('id_bdng');
+            $table->foreign('id_bdng')->references('id')->on('master_bdng')->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->string('nama_pejabat')->nullable();
+            $table->string('nip_pejabat')->nullable();
+            $table->string('pangkat_pejabat')->nullable();
+            $table->string('golongan_pejabat')->nullable();
+            $table->string('ruang_pejabat')->nullable();
+            $table->string('jabatan_pejabat')->nullable();//untuk jabatan sekretaris dan ketua tidak bisa diedit
+            $table->string('sub_bidang_pejabat')->nullable();
+            $table->timestamps();
+          });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('master_bdng_member');
+    }
+};
+
+
+===============================================
+File: 2025_04_23_035045_add_akun_diverifikasi_to_users_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->enum('akun_diverifikasi', ['belum', 'sudah', 'suspended'])->default('belum')->after('password');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('akun_diverifikasi');
+        });
+    }
+};
+
+
+===============================================
+File: 2025_04_25_063714_create_master_mgng_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('master_mgng', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('master_sklh_id')
+                  ->constrained('master_sklh')
+                  ->cascadeOnUpdate()
+                  ->cascadeOnDelete();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('master_mgng');
+    }
+};
+
+
+===============================================
+File: 2025_04_25_064050_create_permintaan_mgng_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('permintaan_mgng', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('master_mgng_id')
+                  ->constrained('master_mgng')
+                  ->cascadeOnUpdate()
+                  ->cascadeOnDelete();
+            $table->string('nomor_surat_permintaan')->unique();
+            $table->date('tanggal_surat_permintaan')->nullable();
+            $table->string('perihal_surat_permintaan')->nullable();
+            $table->string('ditandatangani_oleh')->nullable();
+            $table->string('scan_surat_permintaan')->nullable();
+            $table->string('scan_proposal_magang')->nullable();
+            $table->enum('status_surat_permintaan', ['belum','terkirim'])->default('belum');
+            $table->enum('status_baca_surat_permintaan', ['belum','dibaca'])->default('belum');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('permintaan_mgng');
+    }
+};
+
+
+===============================================
+File: 2025_04_28_035616_remove_foreign_key_from_master_bdng_member.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        // Menghapus foreign key constraint pada kolom id_bdng
+        Schema::table('master_bdng_member', function (Blueprint $table) {
+            // Ganti 'master_bdng_member_id_bdng_foreign' dengan nama constraint yang benar jika berbeda
+            $table->dropForeign('master_bdng_member_id_bdng_foreign');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        // Menambahkan kembali foreign key jika rollback
+        Schema::table('master_bdng_member', function (Blueprint $table) {
+            $table->foreign('id_bdng')->references('id')->on('master_bdng')->onUpdate('CASCADE')->onDelete('CASCADE');
+        });
+    }
+};
+
+
+===============================================
+File: 2025_04_28_035911_change_id_column_in_master_bdng_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('master_bdng', function (Blueprint $table) {
+            // Mengubah kolom 'id' menjadi 'BIGINT UNSIGNED' agar sesuai dengan $table->id()
+            $table->unsignedBigInteger('id', true)->change(); // Mengubah tipe menjadi BIGINT UNSIGNED
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        // Mengembalikan ke tipe sebelumnya (jika rollback)
+        Schema::table('master_bdng', function (Blueprint $table) {
+            $table->increments('id')->change();
+        });
+    }
+};
+
+
+===============================================
+File: 2025_04_28_040351_change_id_bdng_column_in_master_bdng_member.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        // Mengubah kolom id_bdng di master_bdng_member menjadi BIGINT UNSIGNED
+        Schema::table('master_bdng_member', function (Blueprint $table) {
+            $table->unsignedBigInteger('id_bdng')->change(); // Mengubah tipe menjadi BIGINT UNSIGNED
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        // Mengembalikan ke tipe sebelumnya jika rollback
+        Schema::table('master_bdng_member', function (Blueprint $table) {
+            $table->unsignedInteger('id_bdng')->change();
+        });
+    }
+};
+
+
+===============================================
+File: 2025_04_28_040437_add_foreign_key_to_master_bdng_member.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        // Menambahkan kembali foreign key constraint pada kolom id_bdng di master_bdng_member
+        Schema::table('master_bdng_member', function (Blueprint $table) {
+            // Menambahkan kembali foreign key pada kolom id_bdng yang mengarah ke id master_bdng
+            $table->foreign('id_bdng')->references('id')->on('master_bdng')->onUpdate('CASCADE')->onDelete('CASCADE');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        // Hapus foreign key jika rollback
+        Schema::table('master_bdng_member', function (Blueprint $table) {
+            $table->dropForeign('master_bdng_member_id_bdng_foreign');
+        });
+    }
+};
+
+
+===============================================
+File: 2025_04_28_042203_change_id_column_in_master_bdng_member.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        // Mengubah kolom 'id' di 'master_bdng_member' menjadi BIGINT UNSIGNED
+        Schema::table('master_bdng_member', function (Blueprint $table) {
+            $table->unsignedBigInteger('id')->change(); // Mengubah ke BIGINT UNSIGNED
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        // Mengembalikan kolom ke tipe sebelumnya jika rollback
+        Schema::table('master_bdng_member', function (Blueprint $table) {
+            $table->unsignedInteger('id')->change();
+        });
+    }
+};
+
+
+===============================================
+File: 2025_04_28_042417_create_balasan_mgng_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('balasan_mgng', function (Blueprint $table) {
+            // Kolom ID sebagai primary key
+            $table->id();  // BIGINT UNSIGNED dan AUTO_INCREMENT secara default
+
+            // Kolom relasi ke tabel master_mgng
+            $table->unsignedBigInteger('master_mgng_id');
+            $table->foreign('master_mgng_id')->references('id')->on('master_mgng')->onUpdate('CASCADE')->onDelete('CASCADE');
+
+            // Kolom data balasan
+            $table->string('nomor_surat_balasan')->nullable();
+            $table->date('tanggal_surat_balasan')->nullable();
+            $table->enum('sifat_surat_balasan', ['biasa', 'penting', 'segera'])->default('biasa');
+            $table->enum('metode_magang', ['offline', 'online'])->default('offline');
+            $table->enum('lampiran_surat_balasan', ['tidakada', 'selembar'])->default('tidakada');
+            $table->string('scan_surat_balasan')->nullable();
+            $table->date('tanggal_awal_magang')->nullable();
+            $table->date('tanggal_akhir_magang')->nullable();
+            $table->enum('status_surat_balasan', ['belum', 'terkirim'])->default('belum');
+            $table->enum('status_baca_surat_balasan', ['belum', 'dibaca', 'belumbacaupdate', 'dibacaupdate'])->default('belum');
+            
+            // Kolom relasi ke tabel master_bdng_member
+            $table->unsignedBigInteger('id_bdng_member')->nullable();
+            $table->foreign('id_bdng_member')->references('id')->on('master_bdng_member')->onUpdate('CASCADE')->onDelete('CASCADE');
+            
+            // Timestamps untuk created_at dan updated_at
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('balasan_mgng');
+    }
+};
+
+
+===============================================
+File: 2025_04_28_043436_create_master_psrt_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('master_psrt', function (Blueprint $table) {
+            // Kolom ID sebagai primary key
+            $table->id();  // BIGINT UNSIGNED dan AUTO_INCREMENT secara default
+
+            // Kolom relasi ke tabel master_mgng
+            $table->unsignedBigInteger('master_mgng_id');
+            $table->foreign('master_mgng_id')->references('id')->on('master_mgng')->onUpdate('CASCADE')->onDelete('CASCADE');
+
+            // Kolom data peserta magang
+            $table->string('nama_peserta');
+            $table->enum('jenis_kelamin', ['pria', 'wanita'])->default('pria');
+            $table->string('nik_peserta');
+            $table->string('nis_peserta');
+            $table->string('program_studi');
+            $table->string('no_handphone_peserta');
+            $table->string('email_peserta');
+
+            // Kolom data penilaian
+            $table->double('nilai_kedisiplinan', 15, 8)->default(0.00000000);
+            $table->double('nilai_tanggungjawab', 15, 8)->default(0.00000000);
+            $table->double('nilai_kerjasama', 15, 8)->default(0.00000000);
+            $table->double('nilai_motivasi', 15, 8)->default(0.00000000);
+            $table->double('nilai_kepribadian', 15, 8)->default(0.00000000);
+
+            // Nilai pengetahuan, pelaksanaan kerja, hasil kerja, dan nilai akhir
+            $table->double('nilai_pengetahuan', 15, 8)->default(0.00000000);
+            $table->double('nilai_pelaksanaankerja', 15, 8)->default(0.00000000);
+            $table->double('nilai_hasilkerja', 15, 8)->default(0.00000000);
+            $table->double('nilai_akhir', 15, 8)->default(0.00000000);
+
+            // Status penilaian
+            $table->enum('status_penilaian', ['belum', 'sudah'])->default('belum');
+            $table->string('scan_penilaian')->nullable();
+            $table->enum('status_scan_penilaian', ['belum', 'sudah'])->default('belum');
+            $table->text('catatan')->nullable();
+            $table->string('scan_sertifikat')->nullable();
+            $table->enum('status_sertifikat', ['belum', 'terkirim'])->default('belum');
+
+            // Kolom relasi ke tabel master_bdng_member
+            $table->unsignedBigInteger('id_bdng_member')->nullable();
+            $table->foreign('id_bdng_member')->references('id')->on('master_bdng_member')->onUpdate('CASCADE')->onDelete('CASCADE');
+
+            // Timestamps untuk created_at dan updated_at
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('master_psrt');
+    }
+};
+
+
+===============================================
+File: 2025_04_30_030752_add_is_data_completed_to_users_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->boolean('is_data_completed')->default(false); 
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('is_data_completed');
+        });
+    }
+};
+
+
+===============================================
+File: 2025_05_01_130212_add_permintaan_mgng_id_to_master_psrt.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up()
+    {
+        Schema::table('master_psrt', function (Blueprint $table) {
+            $table->unsignedBigInteger('permintaan_mgng_id')->after('id');
+            $table->foreign('permintaan_mgng_id')->references('id')->on('permintaan_mgng')->onDelete('cascade');
+        });
+    }
+    
+    public function down()
+    {
+        Schema::table('master_psrt', function (Blueprint $table) {
+            $table->dropForeign(['permintaan_mgng_id']);
+            $table->dropColumn('permintaan_mgng_id');
+        });
+    }
+};
+
+
+===============================================
+File: 2025_05_01_131318_remove_master_mgng_id_from_master_psrt.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up()
+{
+    // Menghapus foreign key constraint yang mengarah ke master_mgng_id
+    Schema::table('master_psrt', function (Blueprint $table) {
+        // Pastikan untuk mengganti 'master_psrt_master_mgng_id_foreign' dengan nama foreign key yang sesuai
+        $table->dropForeign(['master_mgng_id']);
+        $table->dropColumn('master_mgng_id'); // Hapus kolom master_mgng_id
+    });
+}
+
+public function down()
+{
+    // Menambahkan kembali kolom master_mgng_id jika rollback
+    Schema::table('master_psrt', function (Blueprint $table) {
+        $table->unsignedBigInteger('master_mgng_id')->nullable();  // Menambahkan kolom kembali jika rollback
+    });
+}
+};
+
+
+===============================================
+File: 2025_05_05_141552_add_permintaan_mgng_id_to_balasan_mgng_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up()
+{
+    Schema::table('balasan_mgng', function (Blueprint $table) {
+        // Menambahkan kolom permintaan_mgng_id setelah master_mgng_id
+        $table->unsignedBigInteger('permintaan_mgng_id')->nullable()->after('master_mgng_id');
+        $table->foreign('permintaan_mgng_id')->references('id')->on('permintaan_mgng')->onDelete('cascade');
+    });
+}
+
+public function down()
+{
+    Schema::table('balasan_mgng', function (Blueprint $table) {
+        $table->dropForeign(['permintaan_mgng_id']);
+        $table->dropColumn('permintaan_mgng_id');
+    });
+}
+
+};
+
+
+===============================================
+File: 2025_05_13_075734_create_nota_dinas_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+         Schema::create('nota_dinas', function (Blueprint $table) {
+            $table->id();
+            // Kolom master_mgng_id yang mengarah ke id tabel master_mgng
+            $table->foreignId('master_mgng_id')->constrained('master_mgng')
+                ->cascadeOnUpdate()->cascadeOnDelete();
+
+            // Kolom master_bdng_id yang mengarah ke id tabel master_bdng
+            $table->foreignId('master_bdng_id')->constrained('master_bdng')
+                ->cascadeOnUpdate()->cascadeOnDelete();
+
+            $table->string('nomor_nota_dinas')->nullable();
+            $table->date('tanggal_nota_dinas')->nullable();
+            $table->enum('sifat_nota_dinas', ['biasa', 'penting', 'segera'])->default('biasa');
+            $table->enum('lampiran_nota_dinas', ['tidakada', 'selembar'])->default('tidakada');
+            $table->string('scan_nota_dinas')->nullable();
+            $table->enum('status_nota_dinas', ['belum', 'terkirim'])->default('belum');
+
+            // Kolom untuk bdng_member_id yang mengarah ke master_bdng_member
+            $table->foreignId('bdng_member_id')->nullable()->constrained('master_bdng_member')
+                ->cascadeOnUpdate()->cascadeOnDelete();
+
+            $table->string('scan_laporan_magang')->nullable();
+            $table->enum('status_laporan', ['belum', 'terkirim'])->default('belum');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('nota_dinas');
+    }
+};
+
+
+===============================================
+File: 2025_05_13_080722_create_nota_dinas_item_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('nota_dinas_item', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('nota_dinas_id')->constrained('nota_dinas')->onDelete('cascade');
+            $table->foreignId('master_psrt_id')->constrained('master_psrt')->onDelete('cascade');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('nota_dinas_item');
+    }
+};
+
+
+===============================================
+File: 2025_05_15_120807_add_permintaan_mgng_id_to_nota_dinas_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('nota_dinas', function (Blueprint $table) {
+            // Tambah kolom permintaan_mgng_id setelah master_mgng_id
+            $table->foreignId('permintaan_mgng_id')->nullable()
+                  ->after('master_mgng_id')
+                  ->constrained('permintaan_mgng')
+                  ->cascadeOnUpdate()
+                  ->cascadeOnDelete();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('nota_dinas', function (Blueprint $table) {
+            $table->dropForeign(['permintaan_mgng_id']);
+            $table->dropColumn('permintaan_mgng_id');
+        });
+    }
+};
+
+
+===============================================
+File: 2025_06_04_073606_rename_columns_in_master_psrt_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('master_psrt', function (Blueprint $table) {
+            $table->renameColumn('nilai_kedisiplinan', 'nilai_kehadiran');
+            $table->renameColumn('nilai_tanggungjawab', 'nilai_kerapian');
+            $table->renameColumn('nilai_kerjasama', 'nilai_sikap');
+        });
+
+        Schema::table('master_psrt', function (Blueprint $table) {
+            $table->renameColumn('nilai_motivasi', 'nilai_tanggungjawab');
+            $table->renameColumn('nilai_kepribadian', 'nilai_kepatuhan');
+        });
+
+        Schema::table('master_psrt', function (Blueprint $table) {
+            $table->renameColumn('nilai_pengetahuan', 'nilai_komunikasi');
+            $table->renameColumn('nilai_pelaksanaankerja', 'nilai_kerjasama');
+            $table->renameColumn('nilai_hasilkerja', 'nilai_inisiatif');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('master_psrt', function (Blueprint $table) {
+            $table->renameColumn('nilai_kehadiran', 'nilai_kedisiplinan');
+            $table->renameColumn('nilai_kerapian', 'nilai_tanggungjawab');
+            $table->renameColumn('nilai_sikap', 'nilai_kerjasama');
+        });
+
+        Schema::table('master_psrt', function (Blueprint $table) {
+            $table->renameColumn('nilai_tanggungjawab', 'nilai_motivasi');
+            $table->renameColumn('nilai_kepatuhan', 'nilai_kepribadian');
+        });
+
+        Schema::table('master_psrt', function (Blueprint $table) {
+            $table->renameColumn('nilai_komunikasi', 'nilai_pengetahuan');
+            $table->renameColumn('nilai_kerjasama', 'nilai_pelaksanaankerja');
+            $table->renameColumn('nilai_inisiatif', 'nilai_hasilkerja');
+        });
+    }
+};
+
+
+===============================================
+File: 2025_06_04_081346_update_nilai_columns_in_master_psrt_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('master_psrt', function (Blueprint $table) {
+            $table->decimal('nilai_kehadiran', 5, 2)->default(0)->change();
+            $table->decimal('nilai_kerapian', 5, 2)->default(0)->change();
+            $table->decimal('nilai_sikap', 5, 2)->default(0)->change();
+            $table->decimal('nilai_tanggungjawab', 5, 2)->default(0)->change();
+            $table->decimal('nilai_kepatuhan', 5, 2)->default(0)->change();
+            $table->decimal('nilai_komunikasi', 5, 2)->default(0)->change();
+            $table->decimal('nilai_kerjasama', 5, 2)->default(0)->change();
+            $table->decimal('nilai_inisiatif', 5, 2)->default(0)->change();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('master_psrt', function (Blueprint $table) {
+            $table->double('nilai_kehadiran', 15, 8)->default(0)->change();
+            $table->double('nilai_kerapian', 15, 8)->default(0)->change();
+            $table->double('nilai_sikap', 15, 8)->default(0)->change();
+            $table->double('nilai_tanggungjawab', 15, 8)->default(0)->change();
+            $table->double('nilai_kepatuhan', 15, 8)->default(0)->change();
+            $table->double('nilai_komunikasi', 15, 8)->default(0)->change();
+            $table->double('nilai_kerjasama', 15, 8)->default(0)->change();
+            $table->double('nilai_inisiatif', 15, 8)->default(0)->change();
+        });
+    }
+};
+
+
+
+===============================================
+File: 2025_06_04_081928_add_nilai_teknis_columns_to_master_psrt_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('master_psrt', function (Blueprint $table) {
+            $table->integer('nilai_teknis1')->default(0)->after('nilai_inisiatif');
+            $table->integer('nilai_teknis2')->default(0)->after('nilai_teknis1');
+            $table->integer('nilai_teknis3')->default(0)->after('nilai_teknis2');
+            $table->integer('nilai_teknis4')->default(0)->after('nilai_teknis3');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('master_psrt', function (Blueprint $table) {
+            $table->dropColumn(['nilai_teknis1', 'nilai_teknis2', 'nilai_teknis3', 'nilai_teknis4']);
+        });
+    }
+};
+
+
+===============================================
+File: 2025_06_04_082852_change_nilai_columns_in_master_psrt_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('master_psrt', function (Blueprint $table) {
+            $table->decimal('nilai_akhir', 5, 2)->default(0.00)->change();
+            $table->decimal('nilai_teknis1', 5, 2)->default(0.00)->change();
+            $table->decimal('nilai_teknis2', 5, 2)->default(0.00)->change();
+            $table->decimal('nilai_teknis3', 5, 2)->default(0.00)->change();
+            $table->decimal('nilai_teknis4', 5, 2)->default(0.00)->change();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+         Schema::table('master_psrt', function (Blueprint $table) {
+            $table->double('nilai_akhir', 15, 8)->default(0.00000000)->change();
+            $table->integer('nilai_teknis1')->default(0)->change();
+            $table->integer('nilai_teknis2')->default(0)->change();
+            $table->integer('nilai_teknis3')->default(0)->change();
+            $table->integer('nilai_teknis4')->default(0)->change();
+        });
+    }
+};
+
+
+===============================================
+File: 2025_07_03_044339_add_autoincrement_to_id_in_master_bdng_member_table.php
+===============================================
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        // Perintah ini secara eksplisit mengubah kolom 'id' untuk menambahkan AUTO_INCREMENT
+        // Pastikan tabelnya sudah ada sebelum migrasi ini dijalankan
+        DB::statement('ALTER TABLE `master_bdng_member` MODIFY COLUMN `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT');
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        // Perintah ini mengembalikan kolom ke kondisi semula (tanpa AUTO_INCREMENT) jika Anda melakukan rollback
+        DB::statement('ALTER TABLE `master_bdng_member` MODIFY COLUMN `id` BIGINT UNSIGNED NOT NULL');
+    }
+};
+
