@@ -39,7 +39,7 @@ class OldUserSeeder extends Seeder
                 'fullname' => $user->name,
                 'username' => Str::slug($user->name, '_') . '_' . $user->id,
                 'email' => $user->email,
-                'password' => Hash::make('Sima123456!'), // Password di-reset
+                'password' => $user->password, // Password di-reset
                 'akun_diverifikasi' => $user->akun_diverifikasi,
                 'is_active' => 1,
                 'remember_token' => $user->remember_token,
