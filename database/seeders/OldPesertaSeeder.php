@@ -1,37 +1,36 @@
 <?php
 
+// File: database/seeders/OldPesertaSeeder.php
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class OldPesertaSeeder extends Seeder
 {
-    /**
-     * @var array<int, int>
-     */
     public static array $pesertaIdMap = [];
 
     public function run(): void
     {
-        // --- PERUBAHAN ---
-        // TRUNCATE DIHAPUS
+        Schema::disableForeignKeyConstraints();
+        // DB::table('master_psrt')->truncate();
+        Schema::enableForeignKeyConstraints();
 
         $oldPeserta = DB::connection('mysql_old')->table('master_psrt')->get();
 
         foreach ($oldPeserta as $peserta) {
+            // Validasi: Pastikan magang induknya ada di map
             if (!isset(OldMagangSeeder::$permintaanIdMap[$peserta->id_mgng])) {
                 continue;
             }
 
-            $newMemberId = null;
-            if (!is_null($peserta->id_bdng_member) && isset(OldMasterBidangMemberSeeder::$memberIdMap[$peserta->id_bdng_member])) {
-                $newMemberId = OldMasterBidangMemberSeeder::$memberIdMap[$peserta->id_bdng_member];
-            }
+            $newMemberId = (isset(OldMasterBidangMemberSeeder::$memberIdMap[$peserta->id_bdng_member]))
+                ? OldMasterBidangMemberSeeder::$memberIdMap[$peserta->id_bdng_member]
+                : null;
 
-            // Insert satu per satu untuk mendapatkan ID baru
             $newPesertaId = DB::table('master_psrt')->insertGetId([
-                // 'id' tidak di-set
                 'permintaan_mgng_id' => OldMagangSeeder::$permintaanIdMap[$peserta->id_mgng],
                 'nama_peserta' => $peserta->nama_peserta,
                 'jenis_kelamin' => $peserta->jenis_kelamin,
@@ -40,7 +39,7 @@ class OldPesertaSeeder extends Seeder
                 'program_studi' => $peserta->program_studi,
                 'no_handphone_peserta' => $peserta->no_handphone_peserta,
                 'email_peserta' => $peserta->email_peserta,
-                'nilai_akhir' => 0,
+                'nilai_akhir' => $peserta->nilai_akhir,
                 'status_penilaian' => $peserta->status_penilaian,
                 'scan_penilaian' => $peserta->scan_penilaian,
                 'status_scan_penilaian' => $peserta->status_scan_penilaian,
@@ -50,6 +49,7 @@ class OldPesertaSeeder extends Seeder
                 'id_bdng_member' => $newMemberId,
                 'created_at' => $peserta->created_at,
                 'updated_at' => $peserta->updated_at,
+                // Kolom nilai lainnya bisa ditambahkan di sini jika perlu
             ]);
 
             self::$pesertaIdMap[$peserta->id] = $newPesertaId;

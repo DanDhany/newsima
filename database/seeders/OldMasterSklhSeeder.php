@@ -1,33 +1,32 @@
 <?php
 
+// File: database/seeders/OldMasterSklhSeeder.php
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class OldMasterSklhSeeder extends Seeder
 {
-    /**
-     * @var array<int, int>
-     */
     public static array $sekolahIdMap = [];
 
     public function run(): void
     {
-        // --- PERUBAHAN ---
-        // TRUNCATE DIHAPUS
+        Schema::disableForeignKeyConstraints();
+        // DB::table('master_sklh')->truncate();
+        Schema::enableForeignKeyConstraints();
 
         $oldSekolah = DB::connection('mysql_old')->table('master_sklh')->get();
 
         foreach ($oldSekolah as $sekolah) {
-            // Cek apakah user_id ada di map (user mungkin di-skip karena duplikat)
+            // Pastikan user induknya ada di map
             if (!isset(OldUserSeeder::$userIdMap[$sekolah->id_user])) {
                 continue;
             }
 
-            // Insert satu per satu dan dapatkan ID baru
             $newSekolahId = DB::table('master_sklh')->insertGetId([
-                // 'id' tidak di-set
                 'id_user' => OldUserSeeder::$userIdMap[$sekolah->id_user],
                 'jenis_sklh' => $sekolah->jenis_sklh,
                 'alamat_sklh' => $sekolah->alamat_sklh,
@@ -44,7 +43,6 @@ class OldMasterSklhSeeder extends Seeder
                 'updated_at' => $sekolah->updated_at,
             ]);
 
-            // Simpan pemetaan ID lama ke ID baru
             self::$sekolahIdMap[$sekolah->id] = $newSekolahId;
         }
     }

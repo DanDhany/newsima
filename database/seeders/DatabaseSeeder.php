@@ -18,35 +18,23 @@ class DatabaseSeeder extends Seeder
     {
         Schema::disableForeignKeyConstraints();
 
-        // Aktifkan kembali truncate di setiap seeder jika diperlukan
-        // DB::table('...')->truncate(); 
-
         $this->call([
-            // 1. Master data yang tidak punya dependensi
+            // Master Data Dasar
             OldMasterBidangSeeder::class,
             RoleSeeder::class,
             PermissionSeeder::class,
-
-            // 2. User, menjadi induk untuk sekolah
-            OldUserSeeder::class,
-
-            // 3. Member, bergantung pada Bidang
             OldMasterBidangMemberSeeder::class,
 
-            // 4. Sekolah, bergantung pada User
+            // Data Pengguna & Sekolah
+            OldUserSeeder::class,
             OldMasterSklhSeeder::class,
 
-            // 5. Magang, bergantung pada Sekolah
+            // Data Transaksional
             OldMagangSeeder::class,
-
-            // 6. Peserta, bergantung pada Magang dan Member
             OldPesertaSeeder::class,
+            OldNotaDinasSeeder::class, // Ini yang paling penting, harus terakhir
 
-            // 7. Nota Dinas, bergantung pada banyak seeder sebelumnya
-            OldNotaDinasSeeder::class,
-
-            // Seeders untuk setup awal (jika tidak migrasi) bisa dijalankan terpisah
-            // UserSeeder::class,
+            // Data Aplikasi
             MenuSeeder::class,
             MenuRolePermissionSeeder::class,
         ]);
